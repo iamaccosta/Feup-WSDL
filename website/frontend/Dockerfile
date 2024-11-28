@@ -1,5 +1,5 @@
 ## deps
-FROM node:22-alpineASdeps
+FROM node:22-alpine AS deps
 
 WORKDIR /app
 
@@ -7,7 +7,7 @@ COPY package.json package-lock.json ./
 RUN npm ci
 
 ## project
-FROM node:22-alpineASproject
+FROM node:22-alpine AS project
 
 WORKDIR /app
 
@@ -23,7 +23,7 @@ COPY --from=deps ./package.json ./package-lock.json ./
 COPY --from=deps /app/node_modules ./node_modules
 
 ## runner-dev
-FROM depsASrunner-dev
+FROM deps AS runner-dev
 
 WORKDIR /app
 EXPOSE 3000
@@ -41,14 +41,14 @@ VOLUME [ \
 CMD [ "npm", "run", "dev", "--", "--host", "--port", "3000" ]
 
 ## builder-prod
-FROM projectASbuilder-prod
+FROM project AS builder-prod
 
 WORKDIR /app
 
 RUN npm run build
 
 ## runner-prod
-FROM depsASrunner-prod
+FROM deps AS runner-prod
 
 WORKDIR /app
 EXPOSE 3000
