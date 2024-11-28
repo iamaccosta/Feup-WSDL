@@ -23,5 +23,5 @@ Web Semântica e Dados Ligados
 
 # Docker Development
 
-Alternatively, you can use `docker compose up --build --force-recreate`, in the `website/` to start the apps.
-In this case, the files will be mounted in the containers using volumes, so all changes will be reflected in the running containers (except changes in the PyPI or NPM dependencies).
+Alternatively, you can use `docker compose up --build --force-recreate --watch`, in the `website/` to start the apps.
+In this case, the files will be mounted in the containers using volumes, so all changes will be reflected in the running containers (including changes in the PyPI or NPM dependencies).

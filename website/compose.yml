@@ -1,27 +1,42 @@
 services:
   backend:
     build:
-      context: backend
+      context: .
+      dockerfile: deploy/backend.containerfile
       target: runner-dev
     restart: always
+    develop:
+      watch:
+        - path: ./backend/
+          target: /usr/src/
+          action: sync
+          ignore:
+            - requirements.txt
+        - path: ./backend/requirements.txt
+          target: /usr/src/requirements.txt
+          action: rebuild
     volumes:
       - ./.data/backend:/data
-      - ./backend/app/:/app/app/
-      - ./backend/.env:/app/.env
     ports:
       - "5000:5000"
   frontend:
     build:
-      context: frontend
+      context: .
+      dockerfile: deploy/frontend.containerfile
       target: runner-dev
     restart: always
-    volumes:
-      - ./frontend/app:/app/app/
-      - ./frontend/public:/app/public/
-      - ./frontend/.env:/app/.env
-      - ./frontend/postcss.config.js:/app/postcss.config.js
-      - ./frontend/tailwind.config.ts:/app/tailwind.config.ts
-      - ./frontend/tsconfig.json:/app/tsconfig.json
-      - ./frontend/vite.config.ts:/app/vite.config.ts
+    develop:
+      watch:
+        - path: ./frontend/
+          target: /usr/src/
+          action: sync
+          ignore:
+            - package-lock.json
+        - path: ./frontend/package.json
+          target: /usr/src/package.json
+          action: sync+restart
+        - path: ./frontend/package-lock.json
+          target: /usr/src/package-lock.json
+          action: rebuild
     ports:
       - "3000:3000"
