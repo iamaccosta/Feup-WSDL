@@ -13,18 +13,15 @@ export const meta: MetaFunction = () => {
 export default function Index() {
   return (
     <div className="flex h-dvh items-center justify-center">
-      <div>
-
-        <Form method="get" action="/search" className="flex flex-col gap-6">
-          <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100">
-            Welcome to SmartCity KB
-          </h1>
-          <div className="flex gap-4">
-            <Input type="text" name="q" placeholder="Search..." />
-            <Button type="submit">Search</Button>
-          </div>
-        </Form>
-      </div>
+      <Form method="get" action="/search" className="flex flex-col gap-6">
+        <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100">
+          Welcome to SmartCity KB
+        </h1>
+        <div className="flex gap-4">
+          <Input type="text" name="q" placeholder="Search..." />
+          <Button type="submit">Search</Button>
+        </div>
+      </Form>
     </div>
   );
 }
