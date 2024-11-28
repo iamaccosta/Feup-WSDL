@@ -16,6 +16,8 @@ FROM node:22-alpine AS project
 WORKDIR /usr/src
 
 COPY \
+    ./frontend/postcss.config.js \
+    ./frontend/tailwind.config.ts \
     ./frontend/tsconfig.json \
     ./frontend/vite.config.ts \
     ./
