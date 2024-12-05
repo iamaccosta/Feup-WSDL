@@ -1,0 +1,159 @@
+@prefix dbp: <http://dbpedia.org/property/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://dbpedia.org/resource/Barcelona/climate/April> a dbp:Climate ;
+    rdfs:label "April" ;
+    dbp:aprilHighC "18.0"^^xsd:float,
+        "19.1"^^xsd:float ;
+    dbp:aprilLowC "9.4"^^xsd:float,
+        "12.5"^^xsd:float ;
+    dbp:aprilMeanC "13.7"^^xsd:float,
+        "15.8"^^xsd:float ;
+    dbp:aprilPrecipitationDays "5.0"^^xsd:float,
+        "7.9"^^xsd:float ;
+    dbp:aprilPrecipitationMm "40.0"^^xsd:float,
+        "47.7"^^xsd:float .
+
+<http://dbpedia.org/resource/Barcelona/climate/August> a dbp:Climate ;
+    rdfs:label "August" ;
+    dbp:augustHighC "28.5"^^xsd:float,
+        "29.0"^^xsd:float ;
+    dbp:augustLowC "20.2"^^xsd:float,
+        "23.1"^^xsd:float ;
+    dbp:augustMeanC "24.4"^^xsd:float,
+        "26.1"^^xsd:float ;
+    dbp:augustPrecipitationDays "5.0"^^xsd:float,
+        "5.8"^^xsd:float ;
+    dbp:augustPrecipitationMm "40.8"^^xsd:float,
+        "62.0"^^xsd:float .
+
+<http://dbpedia.org/resource/Barcelona/climate/December> a dbp:Climate ;
+    rdfs:label "December" ;
+    dbp:decemberHighC "14.3"^^xsd:float,
+        "15.1"^^xsd:float ;
+    dbp:decemberLowC "5.7"^^xsd:float,
+        "9.5"^^xsd:float ;
+    dbp:decemberMeanC "10.0"^^xsd:float,
+        "12.3"^^xsd:float ;
+    dbp:decemberPrecipitationDays "4.0"^^xsd:float,
+        "7.0"^^xsd:float ;
+    dbp:decemberPrecipitationMm "40.0"^^xsd:float,
+        "46.8"^^xsd:float .
+
+<http://dbpedia.org/resource/Barcelona/climate/February> a dbp:Climate ;
+    rdfs:label "February" ;
+    dbp:februaryHighC "14.3"^^xsd:float,
+        "15.6"^^xsd:float ;
+    dbp:februaryLowC "5.4"^^xsd:float,
+        "9.3"^^xsd:float ;
+    dbp:februaryMeanC "9.9"^^xsd:float,
+        "12.4"^^xsd:float ;
+    dbp:februaryPrecipitationDays "4.0"^^xsd:float,
+        "5.0"^^xsd:float ;
+    dbp:februaryPrecipitationMm "31.4"^^xsd:float,
+        "35.0"^^xsd:float .
+
+<http://dbpedia.org/resource/Barcelona/climate/January> a dbp:Climate ;
+    rdfs:label "January" ;
+    dbp:januaryHighC "13.6"^^xsd:float,
+        "14.8"^^xsd:float ;
+    dbp:januaryLowC "4.7"^^xsd:float,
+        "8.8"^^xsd:float ;
+    dbp:januaryMeanC "9.2"^^xsd:float,
+        "11.8"^^xsd:float ;
+    dbp:januaryPrecipitationDays "4.0"^^xsd:float,
+        "7.0"^^xsd:float ;
+    dbp:januaryPrecipitationMm "37.0"^^xsd:float,
+        "43.7"^^xsd:float .
+
+<http://dbpedia.org/resource/Barcelona/climate/July> a dbp:Climate ;
+    rdfs:label "July" ;
+    dbp:julyHighC "28.0"^^xsd:float,
+        "28.6"^^xsd:float ;
+    dbp:julyLowC "19.8"^^xsd:float,
+        "22.7"^^xsd:float ;
+    dbp:julyMeanC "23.9"^^xsd:float,
+        "25.7"^^xsd:float ;
+    dbp:julyPrecipitationDays "2.0"^^xsd:float,
+        "3.1"^^xsd:float ;
+    dbp:julyPrecipitationMm "21.0"^^xsd:float,
+        "25.1"^^xsd:float .
+
+<http://dbpedia.org/resource/Barcelona/climate/June> a dbp:Climate ;
+    rdfs:label "June" ;
+    dbp:juneHighC "24.9"^^xsd:float,
+        "26.1"^^xsd:float ;
+    dbp:juneLowC "16.8"^^xsd:float,
+        "19.8"^^xsd:float ;
+    dbp:juneMeanC "20.9"^^xsd:float,
+        "22.9"^^xsd:float ;
+    dbp:junePrecipitationDays "4.0"^^xsd:float,
+        "5.5"^^xsd:float ;
+    dbp:junePrecipitationMm "30.0"^^xsd:float,
+        "32.5"^^xsd:float .
+
+<http://dbpedia.org/resource/Barcelona/climate/March> a dbp:Climate ;
+    rdfs:label "March" ;
+    dbp:marchHighC "16.1"^^xsd:float,
+        "17.4"^^xsd:float ;
+    dbp:marchLowC "7.4"^^xsd:float,
+        "10.9"^^xsd:float ;
+    dbp:marchMeanC "11.8"^^xsd:float,
+        "14.2"^^xsd:float ;
+    dbp:marchPrecipitationDays "5.0"^^xsd:float,
+        "6.2"^^xsd:float ;
+    dbp:marchPrecipitationMm "33.0"^^xsd:float,
+        "36.0"^^xsd:float .
+
+<http://dbpedia.org/resource/Barcelona/climate/May> a dbp:Climate ;
+    rdfs:label "May" ;
+    dbp:mayHighC "21.1"^^xsd:float,
+        "22.5"^^xsd:float ;
+    dbp:mayLowC "12.8"^^xsd:float,
+        "16.1"^^xsd:float ;
+    dbp:mayMeanC "16.9"^^xsd:float,
+        "19.3"^^xsd:float ;
+    dbp:mayPrecipitationDays "5.0"^^xsd:float,
+        "7.5"^^xsd:float ;
+    dbp:mayPrecipitationMm "47.0"^^xsd:float,
+        "47.4"^^xsd:float .
+
+<http://dbpedia.org/resource/Barcelona/climate/November> a dbp:Climate ;
+    rdfs:label "November" ;
+    dbp:novemberHighC "17.3"^^xsd:float,
+        "17.9"^^xsd:float ;
+    dbp:novemberLowC "8.6"^^xsd:float,
+        "11.9"^^xsd:float ;
+    dbp:novemberMeanC "13.0"^^xsd:float,
+        "14.9"^^xsd:float ;
+    dbp:novemberPrecipitationDays "5.0"^^xsd:float,
+        "6.6"^^xsd:float ;
+    dbp:novemberPrecipitationMm "45.1"^^xsd:float,
+        "59.0"^^xsd:float .
+
+<http://dbpedia.org/resource/Barcelona/climate/October> a dbp:Climate ;
+    rdfs:label "October" ;
+    dbp:octoberHighC "22.1"^^xsd:float,
+        "22.5"^^xsd:float ;
+    dbp:octoberLowC "13.5"^^xsd:float,
+        "16.5"^^xsd:float ;
+    dbp:octoberMeanC "17.8"^^xsd:float,
+        "19.5"^^xsd:float ;
+    dbp:octoberPrecipitationDays "6.0"^^xsd:float,
+        "9.0"^^xsd:float ;
+    dbp:octoberPrecipitationMm "91.0"^^xsd:float,
+        "96.5"^^xsd:float .
+
+<http://dbpedia.org/resource/Barcelona/climate/September> a dbp:Climate ;
+    rdfs:label "September" ;
+    dbp:septemberHighC "26.0"^^xsd:float ;
+    dbp:septemberLowC "17.4"^^xsd:float,
+        "20.0"^^xsd:float ;
+    dbp:septemberMeanC "21.7"^^xsd:float,
+        "23.0"^^xsd:float ;
+    dbp:septemberPrecipitationDays "5.0"^^xsd:float,
+        "8.0"^^xsd:float ;
+    dbp:septemberPrecipitationMm "81.0"^^xsd:float,
+        "81.9"^^xsd:float .
+
