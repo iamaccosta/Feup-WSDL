@@ -1,11 +1,12 @@
 from SPARQLWrapper import SPARQLWrapper, JSON
 from rdflib import Graph, Namespace, URIRef, Literal
-from rdflib.namespace import RDF, RDFS, FOAF
+from rdflib.namespace import RDF, RDFS
 
 # Define namespaces
 DBPEDIA = Namespace("http://dbpedia.org/resource/")
 DBPEDIA_ONT = Namespace("http://dbpedia.org/ontology/")
 GEO = Namespace("http://www.w3.org/2003/01/geo/wgs84_pos#")
+XSD = Namespace("http://www.w3.org/2001/XMLSchema#")
 
 # SPARQL endpoint for DBpedia
 sparql = SPARQLWrapper("http://dbpedia.org/sparql")
@@ -36,9 +37,9 @@ def save_to_rdf(city_name, data):
     g = Graph()
     
     # Bind namespaces
+    g.bind("dbpedia", DBPEDIA)
     g.bind("dbo", DBPEDIA_ONT)
     g.bind("geo", GEO)
-    g.bind("foaf", FOAF)
     
     # Create city URI
     city_uri = URIRef(DBPEDIA + city_name)
@@ -46,8 +47,8 @@ def save_to_rdf(city_name, data):
     # Add data to graph
     g.add((city_uri, RDFS.label, Literal(data["name"]["value"], lang="en")))
     g.add((city_uri, DBPEDIA_ONT.abstract, Literal(data["description"]["value"], lang="en")))
-    g.add((city_uri, GEO.lat, Literal(data["latitude"]["value"], datatype="http://www.w3.org/2001/XMLSchema#float")))
-    g.add((city_uri, GEO.long, Literal(data["longitude"]["value"], datatype="http://www.w3.org/2001/XMLSchema#float")))
+    g.add((city_uri, GEO.lat, Literal(data["latitude"]["value"], datatype=XSD.float)))
+    g.add((city_uri, GEO.long, Literal(data["longitude"]["value"], datatype=XSD.float)))
     
     # Save graph to a TTL file
     filename = f"./data/{city_name}_static_data.ttl"
