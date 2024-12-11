@@ -7,7 +7,7 @@ PREFIX tdb2:   <http://jena.apache.org/2016/tdb#>
 
 :tdb_dataset_readwrite
         rdf:type       tdb2:DatasetTDB2;
-        tdb2:location  "C:\\Users\\andre\\jena\\apache-jena-fuseki-5.2.0\\run/databases/smartcity-kb" .
+        tdb2:location  "C:\\Users\\andre\\feup\\WSDL\\project/databases/smartcity-kb" .
 
 :service_tdb_all  rdf:type  fuseki:Service;
         rdfs:label       "TDB2 smartcity-kb";
