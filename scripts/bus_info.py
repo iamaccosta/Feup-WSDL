@@ -121,8 +121,10 @@ def create_rdf(stop_data, output_folder, city_name):
     g.bind("ex", EX)
     g.bind("geo", GEO)
 
+    # Create a city URI
     city_uri = URIRef(f"{EX}{city_name.replace(' ', '_')}")
 
+    # Add stops to RDF
     for stop in stop_data:
         stop_uri = URIRef(f"{EX}stop_{stop['stop_id']}")
         g.add((stop_uri, RDF.type, EX.BusStop))
@@ -131,33 +133,33 @@ def create_rdf(stop_data, output_folder, city_name):
         g.add((stop_uri, GEO.lat, Literal(stop['latitude'], datatype=XSD.float)))
         g.add((stop_uri, GEO.long, Literal(stop['longitude'], datatype=XSD.float)))
 
-        # Link stop to the city
+        # Link to city
         g.add((stop_uri, EX.isLocatedIn, city_uri))
 
-        # Add next bus information
+        # Add bus information
         for bus in stop.get("next_buses", []):
             if isinstance(bus, dict) and "line" in bus and "destination" in bus:
-                bus_info = URIRef(f"{stop_uri}/bus_{bus['line']}_{bus['destination'].replace(' ', '_')}")
-                g.add((bus_info, RDF.type, EX.BusInfo))
-                g.add((bus_info, EX.line, Literal(bus['line'], datatype=XSD.string)))
-                g.add((bus_info, EX.destination, Literal(bus['destination'], datatype=XSD.string)))
-                g.add((bus_info, EX.timeInMinutes, Literal(bus.get('t-in-min', 0), datatype=XSD.int)))
-                g.add((stop_uri, EX.hasNextBus, bus_info))
+                bus_uri = URIRef(f"{stop_uri}/bus_{bus['line']}_{bus['destination'].replace(' ', '_')}")
+                g.add((bus_uri, RDF.type, EX.BusInfo))
+                g.add((bus_uri, EX.line, Literal(bus['line'], datatype=XSD.string)))
+                g.add((bus_uri, EX.destination, Literal(bus['destination'], datatype=XSD.string)))
+                g.add((bus_uri, EX.timeInMinutes, Literal(bus.get("t-in-min", 0), datatype=XSD.int)))
+                g.add((stop_uri, EX.hasNextBus, bus_uri))
 
-    # Save RDF to Turtle file with city name
+    # Save RDF file
     output_file_name = f"{city_name.replace(' ', '_')}_bus_stops.ttl"
     output_path = os.path.join(output_folder, output_file_name)
     g.serialize(destination=output_path, format="turtle")
     print(f"RDF data saved to {output_path}")
 
-# Main script
+# Main function to fetch bus stop data
 def fetch_bus_stop_data(csv_file, output_folder, city_name):
     stop_data = []
 
     # Create output folder if it doesn't exist
     os.makedirs(output_folder, exist_ok=True)
 
-    # Read the CSV file
+    # Read CSV
     with open(csv_file, newline='', encoding='utf-8') as csvfile:
         reader = csv.DictReader(csvfile)
         stops = []
@@ -177,10 +179,7 @@ def fetch_bus_stop_data(csv_file, output_folder, city_name):
             except ValueError as e:
                 print(f"Skipping invalid stop data: {e}")
 
-            # Fetch next bus data
-            #next_buses = fetch_next_buses(stop_id)
-
-    # Use ThreadPoolExecutor for concurrent fetching
+    # Process stops concurrently
     with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
         futures = [executor.submit(process_stop, stop, stop_data) for stop in stops]
         concurrent.futures.wait(futures)

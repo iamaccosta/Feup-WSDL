@@ -13,10 +13,10 @@ API_KEY = "3b89c692d961ddb0d96c893a41852dfc"
 GEO_API_URL = "http://api.openweathermap.org/geo/1.0/direct"
 WEATHER_API_URL = "https://api.openweathermap.org/data/2.5/weather"
 
-# RDF Namespace
+# RDF Namespaces
 DBPEDIA = Namespace("http://dbpedia.org/resource/")
 DBPEDIA_ONT = Namespace("http://dbpedia.org/ontology/")
-EX = Namespace("http://example.org/weather#")
+GEO = Namespace("http://www.w3.org/2003/01/geo/wgs84_pos#")
 
 # Function to get latitude, longitude, and country code of the city
 def get_coordinates(city_name):
@@ -38,7 +38,6 @@ def get_coordinates(city_name):
         print(f"Error fetching coordinates: {e}")
         return None, None, None
 
-
 # Function to get current weather using latitude and longitude
 def get_current_weather(lat, lon):
     try:
@@ -46,27 +45,27 @@ def get_current_weather(lat, lon):
         response = requests.get(WEATHER_API_URL, params=params)
         response.raise_for_status()
         data = response.json()
-        # Parse relevant weather information
         weather_info = {
-            "current_temperature": data["main"]["temp"],
-            "current_humidity": data["main"]["humidity"],
-            "current_weather": data["weather"][0]["description"],
-            "current_wind_speed": data["wind"]["speed"],
+            "current_temperature": data.get("main", {}).get("temp"),
+            "current_humidity": data.get("main", {}).get("humidity"),
+            "current_weather": data.get("weather", [{}])[0].get("description"),
+            "current_wind_speed": data.get("wind", {}).get("speed"),
         }
+        if None in weather_info.values():
+            print(f"Some weather data is missing: {weather_info}")
         print(f"Current Weather Data: {weather_info}")
         return weather_info
     except requests.RequestException as e:
         print(f"Error fetching weather data: {e}")
         return None
 
-
 # Function to save weather data as RDF Turtle
 def save_weather_as_rdf(city_name, weather_info):
     try:
-        # Create RDF graph
         g = Graph()
         g.bind("dbpedia", DBPEDIA)
         g.bind("dbo", DBPEDIA_ONT)
+        g.bind("geo", GEO)
 
         # Define the city's URI
         city_uri = DBPEDIA[city_name.replace(" ", "_")]
@@ -86,7 +85,6 @@ def save_weather_as_rdf(city_name, weather_info):
     except Exception as e:
         print(f"Error saving RDF data: {e}")
 
-
 # Main function to fetch and save weather data
 def fetch_weather_data(city_name):
     lat, lon, country_code = get_coordinates(city_name)
@@ -95,8 +93,7 @@ def fetch_weather_data(city_name):
         if weather_info:
             save_weather_as_rdf(city_name, weather_info)
 
-
-# Schedule the script to run every 30 minutes
+# Schedule the script to run every 10 minutes
 def schedule_weather_data(city_name):
     schedule.every(10).minutes.do(fetch_weather_data, city_name=city_name)
 
@@ -112,4 +109,3 @@ if __name__ == "__main__":
     while True:
         schedule.run_pending()
         time.sleep(1)  # Wait to prevent high CPU usage
-    
