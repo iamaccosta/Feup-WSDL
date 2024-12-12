@@ -3,8 +3,8 @@ import sys
 import os
 import time
 import schedule
-from rdflib import Graph, Namespace, Literal, RDF
-from rdflib.namespace import XSD
+from rdflib import Graph, Namespace, Literal, RDF, XSD
+
 
 # Your OpenWeatherMap API Key
 API_KEY = "3b89c692d961ddb0d96c893a41852dfc"
@@ -17,6 +17,7 @@ WEATHER_API_URL = "https://api.openweathermap.org/data/2.5/weather"
 DBPEDIA = Namespace("http://dbpedia.org/resource/")
 DBPEDIA_ONT = Namespace("http://dbpedia.org/ontology/")
 GEO = Namespace("http://www.w3.org/2003/01/geo/wgs84_pos#")
+FUSEKI_UPDATE_URL = "http://localhost:3030/#/dataset/smartcity/query"
 
 # Function to get latitude, longitude, and country code of the city
 def get_coordinates(city_name):
@@ -85,13 +86,63 @@ def save_weather_as_rdf(city_name, weather_info):
     except Exception as e:
         print(f"Error saving RDF data: {e}")
 
-# Main function to fetch and save weather data
+# Function to update weather data in Fuseki
+def update_weather_data(city_name, weather_info):
+    try:
+        query = f"""
+        PREFIX dbo: <http://dbpedia.org/ontology/>
+        PREFIX dbpedia: <http://dbpedia.org/resource/>
+        PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+        DELETE {{
+            dbpedia:Barcelona dbo:current_temperature ?oldTemperature .
+        }}
+        INSERT {{
+            dbpedia:Barcelona dbo:current_temperature "15.5"^^xsd:float .
+        }}
+        WHERE {{
+            dbpedia:Barcelona dbo:current_temperature ?oldTemperature .
+        }}
+        """
+        headers = {"Content-Type": "application/json"}
+        response = requests.post("http://localhost:3030/smartcity/update", data=query, headers=headers, auth=("admin", "smartcity-kb"))
+        if response.status_code == 200:
+            print(f"Weather data for {city_name} successfully updated in Fuseki.")
+        else:
+            print(f"Failed to update weather data in Fuseki: {response.text}")
+    except Exception as e:
+        print(f"Error updating RDF data in Fuseki: {e}")
+
+def direct_sparql_update(endpoint):
+    query = """
+    PREFIX dbo: <http://dbpedia.org/ontology/>
+    PREFIX dbpedia: <http://dbpedia.org/resource/>
+
+    SELECT ?temperature
+    WHERE {
+        dbpedia:Barcelona dbo:current_temperature ?temperature .
+    }
+    """
+    try:
+        params = {"query": query}
+        response = requests.get(endpoint, params=params)
+
+        if response.status_code == 200:
+            print("Response:", response.text)
+        else:
+            print(f"Error: {response.status_code}, {response.text}")
+    except Exception as e:
+        print(f"Error performing update: {e}")
+
+# Main function to fetch, save, and update weather data
 def fetch_weather_data(city_name):
     lat, lon, country_code = get_coordinates(city_name)
     if lat and lon:
         weather_info = get_current_weather(lat, lon)
         if weather_info:
             save_weather_as_rdf(city_name, weather_info)
+            #update_weather_data(city_name, weather_info)
+            direct_sparql_update("http://localhost:3030/smartcity-kb/sparql")
 
 # Schedule the script to run every 10 minutes
 def schedule_weather_data(city_name):
@@ -108,4 +159,4 @@ if __name__ == "__main__":
     schedule_weather_data(city_name)
     while True:
         schedule.run_pending()
-        time.sleep(1)  # Wait to prevent high CPU usage
+        time.sleep(1)  # Prevent high CPU usage
