@@ -1,7 +1,7 @@
 import { LoaderFunctionArgs } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 
-export function loader({ request }: LoaderFunctionArgs) {
+export async function loader({ request }: LoaderFunctionArgs) {
     const url = new URL(request.url);
     
     const query = url.searchParams.get("q");
@@ -9,12 +9,26 @@ export function loader({ request }: LoaderFunctionArgs) {
         throw new Response("A search query must be provided", { status: 400 });
     }
 
-    // Make a request to the Python backend here
-    // const response = await fetch(..., {
-    // 
-    // }
+    try {
+        const response = await fetch('https://localhost:5000/api/search', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/ld+json',
+            },
+            body: JSON.stringify({query})
+        })
+
+        if (!response.ok) {
+            throw new Response("Failed fetching search results", { status: response.status });
+        }
+
+        //TODO: Parse the RDF and show the information
+
+    } catch (error) {
+        throw new Response('Error fetching search results', { status: 500 });
+    }
     
-    return { query };
 }
 
 export default function Search() {
