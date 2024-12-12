@@ -4,6 +4,7 @@ import os
 import time
 import schedule
 from rdflib import Graph, Namespace, Literal, RDF, XSD
+from requests.auth import HTTPBasicAuth
 
 
 # Your OpenWeatherMap API Key
@@ -117,18 +118,30 @@ def direct_sparql_update(endpoint):
     query = """
     PREFIX dbo: <http://dbpedia.org/ontology/>
     PREFIX dbpedia: <http://dbpedia.org/resource/>
+    PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 
-    SELECT ?temperature
+    DELETE {
+        dbpedia:Barcelona dbo:current_temperature ?oldTemperature .
+    }
+    INSERT {
+        dbpedia:Barcelona dbo:current_temperature "10.5"^^xsd:float .
+    }
     WHERE {
-        dbpedia:Barcelona dbo:current_temperature ?temperature .
+        dbpedia:Barcelona dbo:current_temperature ?oldTemperature .
     }
     """
     try:
-        params = {"query": query}
-        response = requests.get(endpoint, params=params)
+        headers = {"Content-Type": "application/sparql-update"}
+        
+        username = "admin"
+        password = "smartcity-kb"
+
+        response = requests.post(endpoint, data=query, headers=headers, auth=HTTPBasicAuth(username, password))
 
         if response.status_code == 200:
             print("Response:", response.text)
+        elif response.status_code == 204:
+            print("Update Successful!")
         else:
             print(f"Error: {response.status_code}, {response.text}")
     except Exception as e:
@@ -142,7 +155,7 @@ def fetch_weather_data(city_name):
         if weather_info:
             save_weather_as_rdf(city_name, weather_info)
             #update_weather_data(city_name, weather_info)
-            direct_sparql_update("http://localhost:3030/smartcity-kb/sparql")
+            direct_sparql_update("http://localhost:3030/smartcity-kb/update")
 
 # Schedule the script to run every 10 minutes
 def schedule_weather_data(city_name):
