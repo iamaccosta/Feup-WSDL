@@ -87,33 +87,51 @@ def save_weather_as_rdf(city_name, weather_info):
     except Exception as e:
         print(f"Error saving RDF data: {e}")
 
-# Function to update weather data in Fuseki
-def update_weather_data(city_name, weather_info):
+# Selects the temperature of Barcelona through a POST HTTP request
+def direct_sparql_query_post(endpoint):
+    query = """
+    PREFIX dbo: <http://dbpedia.org/ontology/>
+    PREFIX dbpedia: <http://dbpedia.org/resource/>
+
+    SELECT ?temperature
+    WHERE {
+        dbpedia:Barcelona dbo:current_temperature ?temperature .
+    }
+    """
     try:
-        query = f"""
-        PREFIX dbo: <http://dbpedia.org/ontology/>
-        PREFIX dbpedia: <http://dbpedia.org/resource/>
-        PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+        headers = {"Content-Type": "application/sparql-query"}
+        response = requests.post(endpoint, data=query, headers=headers)
 
-        DELETE {{
-            dbpedia:Barcelona dbo:current_temperature ?oldTemperature .
-        }}
-        INSERT {{
-            dbpedia:Barcelona dbo:current_temperature "15.5"^^xsd:float .
-        }}
-        WHERE {{
-            dbpedia:Barcelona dbo:current_temperature ?oldTemperature .
-        }}
-        """
-        headers = {"Content-Type": "application/json"}
-        response = requests.post("http://localhost:3030/smartcity/update", data=query, headers=headers, auth=("admin", "smartcity-kb"))
         if response.status_code == 200:
-            print(f"Weather data for {city_name} successfully updated in Fuseki.")
+            print("Response:", response.text)
         else:
-            print(f"Failed to update weather data in Fuseki: {response.text}")
+            print(f"Error: {response.status_code}, {response.text}")
     except Exception as e:
-        print(f"Error updating RDF data in Fuseki: {e}")
+        print(f"Error performing query: {e}")
 
+# Selects the temperature of Barcelona through a GET HTTP request
+def direct_sparql_query_get(endpoint):
+    query = """
+    PREFIX dbo: <http://dbpedia.org/ontology/>
+    PREFIX dbpedia: <http://dbpedia.org/resource/>
+
+    SELECT ?temperature
+    WHERE {
+        dbpedia:Barcelona dbo:current_temperature ?temperature .
+    }
+    """
+    try:
+        params = {"query": query}
+        response = requests.get(endpoint, params=params)
+
+        if response.status_code == 200:
+            print("Response:", response.text)
+        else:
+            print(f"Error: {response.status_code}, {response.text}")
+    except Exception as e:
+        print(f"Error performing query: {e}")
+
+# Updates the temperature of Barcelona through a POST HTTP request
 def direct_sparql_update(endpoint):
     query = """
     PREFIX dbo: <http://dbpedia.org/ontology/>
@@ -154,8 +172,8 @@ def fetch_weather_data(city_name):
         weather_info = get_current_weather(lat, lon)
         if weather_info:
             save_weather_as_rdf(city_name, weather_info)
-            #update_weather_data(city_name, weather_info)
             direct_sparql_update("http://localhost:3030/smartcity-kb/update")
+            direct_sparql_query_get("http://localhost:3030/smartcity-kb/query")
 
 # Schedule the script to run every 10 minutes
 def schedule_weather_data(city_name):
