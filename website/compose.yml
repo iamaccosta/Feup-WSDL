@@ -40,3 +40,16 @@ services:
           action: rebuild
     ports:
       - "3000:3000"
+
+  fuseki:
+    image: stain/jena-fuseki:latest
+    container_name: jena-fuseki
+    ports:
+      - "3030:3030"
+    volumes:
+      - ./data:/fuseki/databases
+      - ./config:/fuseki/configuration
+    environment:
+      - ADMIN_PASSWORD=smartcity-kb
+    restart: always
+
