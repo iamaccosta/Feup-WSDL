@@ -115,9 +115,12 @@ def direct_sparql_query_get(endpoint):
     PREFIX dbo: <http://dbpedia.org/ontology/>
     PREFIX dbpedia: <http://dbpedia.org/resource/>
 
-    SELECT ?temperature
+    SELECT ?temperature ?humidity ?weatherCondition ?windSpeed
     WHERE {
         dbpedia:Barcelona dbo:current_temperature ?temperature .
+        dbpedia:Barcelona dbo:current_humidity ?humidity .
+        dbpedia:Barcelona dbo:current_weatherCondition ?weatherCondition .
+        dbpedia:Barcelona dbo:current_windSpeed ?windSpeed .
     }
     """
     try:
@@ -132,21 +135,32 @@ def direct_sparql_query_get(endpoint):
         print(f"Error performing query: {e}")
 
 # Updates the temperature of Barcelona through a POST HTTP request
-def direct_sparql_update(endpoint):
-    query = """
+def direct_sparql_update(endpoint, weather_info):
+    print(weather_info)
+
+    query = f"""
     PREFIX dbo: <http://dbpedia.org/ontology/>
     PREFIX dbpedia: <http://dbpedia.org/resource/>
     PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 
-    DELETE {
+    DELETE {{
+        dbpedia:Barcelona dbo:current_temperature ?oldTemperature ;
+                          dbo:current_humidity ?oldHumidity ;
+                          dbo:current_weatherCondition ?oldCondition ;
+                          dbo:current_windSpeed ?oldWindSpeed .
+    }}
+    INSERT {{
+        dbpedia:Barcelona dbo:current_temperature "{weather_info['current_temperature']}"^^xsd:float ;
+                          dbo:current_humidity "{weather_info['current_humidity']}"^^xsd:float ;
+                          dbo:current_weatherCondition "{weather_info['current_weather']}"^^xsd:string ;
+                          dbo:current_windSpeed "{weather_info['current_wind_speed']}"^^xsd:float .
+    }}
+    WHERE {{
         dbpedia:Barcelona dbo:current_temperature ?oldTemperature .
-    }
-    INSERT {
-        dbpedia:Barcelona dbo:current_temperature "10.5"^^xsd:float .
-    }
-    WHERE {
-        dbpedia:Barcelona dbo:current_temperature ?oldTemperature .
-    }
+        dbpedia:Barcelona dbo:current_humidity ?oldHumidity .
+        dbpedia:Barcelona dbo:current_weatherCondition ?oldCondition .
+        dbpedia:Barcelona dbo:current_windSpeed ?oldWindSpeed .
+    }}
     """
     try:
         headers = {"Content-Type": "application/sparql-update"}
@@ -172,7 +186,7 @@ def fetch_weather_data(city_name):
         weather_info = get_current_weather(lat, lon)
         if weather_info:
             save_weather_as_rdf(city_name, weather_info)
-            direct_sparql_update("http://localhost:3030/smartcity-kb/update")
+            direct_sparql_update("http://localhost:3030/smartcity-kb/update", weather_info)
             direct_sparql_query_get("http://localhost:3030/smartcity-kb/query")
 
 # Schedule the script to run every 10 minutes
