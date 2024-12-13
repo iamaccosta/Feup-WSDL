@@ -7,7 +7,7 @@ services:
     ports:
       - "3030:3030"
     volumes:
-      - ./data:/fuseki/databases
+      - ./databases:/fuseki/databases
       - ./config:/fuseki/configuration
     environment:
       - ADMIN_PASSWORD=smartcity-kb

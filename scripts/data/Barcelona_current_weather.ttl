@@ -2,8 +2,8 @@
 @prefix dbpedia: <http://dbpedia.org/resource/> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
-dbpedia:Barcelona dbo:current_humidity "67"^^xsd:float ;
-    dbo:current_temperature "11.85"^^xsd:float ;
-    dbo:current_weatherCondition "scattered clouds"^^xsd:string ;
-    dbo:current_windSpeed "4.92"^^xsd:float .
+dbpedia:Barcelona dbo:current_humidity "69"^^xsd:float ;
+    dbo:current_temperature "15.02"^^xsd:float ;
+    dbo:current_weatherCondition "few clouds"^^xsd:string ;
+    dbo:current_windSpeed "2.06"^^xsd:float .
 
