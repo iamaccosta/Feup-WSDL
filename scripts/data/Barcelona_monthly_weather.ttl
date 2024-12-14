@@ -4,109 +4,168 @@
 
 <http://dbpedia.org/resource/Barcelona/climate/April> a dbp:Climate ;
     rdfs:label "April"@en ;
-    dbp:highC "18.0"^^xsd:float ;
-    dbp:lowC "9.4"^^xsd:float ;
-    dbp:meanC "13.7"^^xsd:float ;
+    dbp:highC "18.0"^^xsd:float,
+        "19.1"^^xsd:float ;
+    dbp:lowC "9.4"^^xsd:float,
+        "12.5"^^xsd:float ;
+    dbp:meanC "13.7"^^xsd:float,
+        "15.8"^^xsd:float ;
     dbp:month "April"^^xsd:string ;
-    dbp:precipitationDays "5.0"^^xsd:float ;
-    dbp:precipitationMm "40.0"^^xsd:floatt .
+    dbp:precipitationDays "5.0"^^xsd:float,
+        "7.9"^^xsd:float ;
+    dbp:precipitationMm "40.0"^^xsd:float,
+        "47.7"^^xsd:float .
 
 <http://dbpedia.org/resource/Barcelona/climate/August> a dbp:Climate ;
     rdfs:label "August"@en ;
-    dbp:highC "28.5"^^xsd:float ;
-    dbp:lowC "20.2"^^xsd:float ;
-    dbp:meanC "24.4"^^xsd:float ;
+    dbp:highC "28.5"^^xsd:float,
+        "29.0"^^xsd:float ;
+    dbp:lowC "20.2"^^xsd:float,
+        "23.1"^^xsd:float ;
+    dbp:meanC "24.4"^^xsd:float,
+        "26.1"^^xsd:float ;
     dbp:month "August"^^xsd:string ;
-    dbp:precipitationDays "5.0"^^xsd:float ;
-    dbp:precipitationMm "40.8"^^xsd:float .
+    dbp:precipitationDays "5.0"^^xsd:float,
+        "5.8"^^xsd:float ;
+    dbp:precipitationMm "40.8"^^xsd:float,
+        "62.0"^^xsd:float .
 
 <http://dbpedia.org/resource/Barcelona/climate/December> a dbp:Climate ;
     rdfs:label "December"@en ;
-    dbp:highC "14.3"^^xsd:float ;
-    dbp:lowC "5.7"^^xsd:float ;
-    dbp:meanC "10.0"^^xsd:float ;
+    dbp:highC "14.3"^^xsd:float,
+        "15.1"^^xsd:float ;
+    dbp:lowC "5.7"^^xsd:float,
+        "9.5"^^xsd:float ;
+    dbp:meanC "10.0"^^xsd:float,
+        "12.3"^^xsd:float ;
     dbp:month "December"^^xsd:string ;
-    dbp:precipitationDays "4.0"^^xsd:float ;
-    dbp:precipitationMm "40.0"^^xsd:float .
+    dbp:precipitationDays "4.0"^^xsd:float,
+        "7.0"^^xsd:float ;
+    dbp:precipitationMm "40.0"^^xsd:float,
+        "46.8"^^xsd:float .
 
 <http://dbpedia.org/resource/Barcelona/climate/February> a dbp:Climate ;
     rdfs:label "February"@en ;
-    dbp:highC "14.3"^^xsd:float ;
-    dbp:lowC "5.4"^^xsd:float ;
-    dbp:meanC "9.9"^^xsd:float ;
+    dbp:highC "14.3"^^xsd:float,
+        "15.6"^^xsd:float ;
+    dbp:lowC "5.4"^^xsd:float,
+        "9.3"^^xsd:float ;
+    dbp:meanC "9.9"^^xsd:float,
+        "12.4"^^xsd:float ;
     dbp:month "February"^^xsd:string ;
-    dbp:precipitationDays "4.0"^^xsd:float ;
-    dbp:precipitationMm "31.4"^^xsd:float .
+    dbp:precipitationDays "4.0"^^xsd:float,
+        "5.0"^^xsd:float ;
+    dbp:precipitationMm "31.4"^^xsd:float,
+        "35.0"^^xsd:float .
 
 <http://dbpedia.org/resource/Barcelona/climate/January> a dbp:Climate ;
     rdfs:label "January"@en ;
-    dbp:highC "13.6"^^xsd:float ;
-    dbp:lowC "4.7"^^xsd:float ;
-    dbp:meanC "9.2"^^xsd:float ;
+    dbp:highC "13.6"^^xsd:float,
+        "14.8"^^xsd:float ;
+    dbp:lowC "4.7"^^xsd:float,
+        "8.8"^^xsd:float ;
+    dbp:meanC "9.2"^^xsd:float,
+        "11.8"^^xsd:float ;
     dbp:month "January"^^xsd:string ;
-    dbp:precipitationDays "4.0"^^xsd:float ;
-    dbp:precipitationMm "37.0"^^xsd:float .
+    dbp:precipitationDays "4.0"^^xsd:float,
+        "7.0"^^xsd:float ;
+    dbp:precipitationMm "37.0"^^xsd:float,
+        "43.7"^^xsd:float .
 
 <http://dbpedia.org/resource/Barcelona/climate/July> a dbp:Climate ;
     rdfs:label "July"@en ;
-    dbp:highC "28.0"^^xsd:float ;
-    dbp:lowC "19.8"^^xsd:float ;
-    dbp:meanC "23.9"^^xsd:float ;
+    dbp:highC "28.0"^^xsd:float,
+        "28.6"^^xsd:float ;
+    dbp:lowC "19.8"^^xsd:float,
+        "22.7"^^xsd:float ;
+    dbp:meanC "23.9"^^xsd:float,
+        "25.7"^^xsd:float ;
     dbp:month "July"^^xsd:string ;
-    dbp:precipitationDays "2.0"^^xsd:float ;
-    dbp:precipitationMm "21.0"^^xsd:float .
+    dbp:precipitationDays "2.0"^^xsd:float,
+        "3.1"^^xsd:float ;
+    dbp:precipitationMm "21.0"^^xsd:float,
+        "25.1"^^xsd:float .
 
 <http://dbpedia.org/resource/Barcelona/climate/June> a dbp:Climate ;
     rdfs:label "June"@en ;
-    dbp:highC "24.9"^^xsd:float ;
-    dbp:lowC "16.8"^^xsd:floatt ;
-    dbp:meanC "20.9"^^xsd:float ;
+    dbp:highC "24.9"^^xsd:float,
+        "26.1"^^xsd:float ;
+    dbp:lowC "16.8"^^xsd:float,
+        "19.8"^^xsd:float ;
+    dbp:meanC "20.9"^^xsd:float,
+        "22.9"^^xsd:float ;
     dbp:month "June"^^xsd:string ;
-    dbp:precipitationDays "4.0"^^xsd:float ;
-    dbp:precipitationMm "30.0"^^xsd:float .
+    dbp:precipitationDays "4.0"^^xsd:float,
+        "5.5"^^xsd:float ;
+    dbp:precipitationMm "30.0"^^xsd:float,
+        "32.5"^^xsd:float .
 
 <http://dbpedia.org/resource/Barcelona/climate/March> a dbp:Climate ;
     rdfs:label "March"@en ;
-    dbp:highC "16.1"^^xsd:float ;
-    dbp:lowC "7.4"^^xsd:float ;
-    dbp:meanC "11.8"^^xsd:float ;
+    dbp:highC "16.1"^^xsd:float,
+        "17.4"^^xsd:float ;
+    dbp:lowC "7.4"^^xsd:float,
+        "10.9"^^xsd:float ;
+    dbp:meanC "11.8"^^xsd:float,
+        "14.2"^^xsd:float ;
     dbp:month "March"^^xsd:string ;
-    dbp:precipitationDays "5.0"^^xsd:float ;
-    dbp:precipitationMm "33.0"^^xsd:float .
+    dbp:precipitationDays "5.0"^^xsd:float,
+        "6.2"^^xsd:float ;
+    dbp:precipitationMm "33.0"^^xsd:float,
+        "36.0"^^xsd:float .
 
 <http://dbpedia.org/resource/Barcelona/climate/May> a dbp:Climate ;
     rdfs:label "May"@en ;
-    dbp:highC "21.1"^^xsd:float ;
-    dbp:lowC "12.8"^^xsd:float ;
-    dbp:meanC "16.9"^^xsd:float ;
+    dbp:highC "21.1"^^xsd:float,
+        "22.5"^^xsd:float ;
+    dbp:lowC "12.8"^^xsd:float,
+        "16.1"^^xsd:float ;
+    dbp:meanC "16.9"^^xsd:float,
+        "19.3"^^xsd:float ;
     dbp:month "May"^^xsd:string ;
-    dbp:precipitationDays "5.0"^^xsd:float ;
-    dbp:precipitationMm "47.0"^^xsd:float .
+    dbp:precipitationDays "5.0"^^xsd:float,
+        "7.5"^^xsd:float ;
+    dbp:precipitationMm "47.0"^^xsd:float,
+        "47.4"^^xsd:float .
 
 <http://dbpedia.org/resource/Barcelona/climate/November> a dbp:Climate ;
     rdfs:label "November"@en ;
-    dbp:highC "17.3"^^xsd:float ;
-    dbp:lowC "8.6"^^xsd:float ;
-    dbp:meanC "13.0"^^xsd:float ;
+    dbp:highC "17.3"^^xsd:float,
+        "17.9"^^xsd:float ;
+    dbp:lowC "8.6"^^xsd:float,
+        "11.9"^^xsd:float ;
+    dbp:meanC "13.0"^^xsd:float,
+        "14.9"^^xsd:float ;
     dbp:month "November"^^xsd:string ;
-    dbp:precipitationDays "5.0"^^xsd:float ;
-    dbp:precipitationMm "45.1"^^xsd:float .
+    dbp:precipitationDays "5.0"^^xsd:float,
+        "6.6"^^xsd:float ;
+    dbp:precipitationMm "45.1"^^xsd:float,
+        "59.0"^^xsd:float .
 
 <http://dbpedia.org/resource/Barcelona/climate/October> a dbp:Climate ;
     rdfs:label "October"@en ;
-    dbp:highC "22.1"^^xsd:float ;
-    dbp:lowC "13.5"^^xsd:float ;
-    dbp:meanC "17.8"^^xsd:float ;
+    dbp:highC "22.1"^^xsd:float,
+        "22.5"^^xsd:float ;
+    dbp:lowC "13.5"^^xsd:float,
+        "16.5"^^xsd:float ;
+    dbp:meanC "17.8"^^xsd:float,
+        "19.5"^^xsd:float ;
     dbp:month "October"^^xsd:string ;
-    dbp:precipitationDays "6.0"^^xsd:float ;
-    dbp:precipitationMm "91.0"^^xsd:float .
+    dbp:precipitationDays "6.0"^^xsd:float,
+        "9.0"^^xsd:float ;
+    dbp:precipitationMm "91.0"^^xsd:float,
+        "96.5"^^xsd:float .
 
 <http://dbpedia.org/resource/Barcelona/climate/September> a dbp:Climate ;
     rdfs:label "September"@en ;
     dbp:highC "26.0"^^xsd:float ;
-    dbp:lowC "17.4"^^xsd:float ;
-    dbp:meanC "21.7"^^xsd:float ;
+    dbp:lowC "17.4"^^xsd:float,
+        "20.0"^^xsd:float ;
+    dbp:meanC "21.7"^^xsd:float,
+        "23.0"^^xsd:float ;
     dbp:month "September"^^xsd:string ;
-    dbp:precipitationDays "5.0"^^xsd:float ;
-    dbp:precipitationMm "81.0"^^xsd:float .
+    dbp:precipitationDays "5.0"^^xsd:float,
+        "8.0"^^xsd:float ;
+    dbp:precipitationMm "81.0"^^xsd:float,
+        "81.9"^^xsd:float .
 

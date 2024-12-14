@@ -5,6 +5,7 @@ import schedule
 import time
 from rdflib import Graph, Namespace, URIRef, Literal
 from rdflib.namespace import RDF, RDFS, XSD
+from requests.auth import HTTPBasicAuth
 import subprocess
 
 # Your OpenWeatherMap API Key
@@ -97,6 +98,72 @@ def save_forecast_as_rdf(city_name, forecasts):
     except Exception as e:
         print(f"Error saving RDF data: {e}")
 
+#Updates Jena Forecasts
+def update_forecasts(city_name, endpoint, forecasts):
+    headers = {"Content-Type": "application/sparql-update"}  
+    username = "admin"
+    password = "smartcity-kb"
+
+    delete_query= f"""
+    PREFIX dbp: <http://dbpedia.org/property/>
+    PREFIX dbpedia: <http://dbpedia.org/resource/>
+
+    DELETE WHERE {{
+        ?forecast a dbp:Forecast ;
+            dbp:humidity ?humidity ;
+            dbp:temperature ?temperature ;
+            dbp:weatherCondition ?condition ;
+            dbp:windSpeed ?windSpeed .
+    }}
+    """
+    try:
+        delete_response = requests.post(endpoint, data=delete_query, headers=headers, auth=HTTPBasicAuth(username, password))
+
+        if delete_response.status_code == 200:
+            print("Response:", response.text)
+        elif delete_response.status_code == 204:
+            print("Old forecasts deleted successfully!")
+        else:
+            print(f"Error: {delete_response.status_code}, {delete_response.text}")
+    except Exception as e:
+        print(f"Error performing update: {e}")
+
+    # insert forecasts
+    insert_statements = []
+    for forecast in forecasts:
+        forecast_uri = f"<http://dbpedia.org/resource/{city_name.replace(' ', '_')}/Forecast/{forecast['datetime'].replace(':', '_')}>"
+        insert_statements.append(f"""
+            {forecast_uri} a dbp:Forecast ;
+                            rdfs:label "{forecast['datetime']}" ;
+                            dbp:humidity "{forecast['humidity']}"^^xsd:float ;
+                            dbp:temperature "{forecast['temperature']}"^^xsd:float ;
+                            dbp:weatherCondition "{forecast['weather']}"^^xsd:string ;
+                            dbp:windSpeed "{forecast['wind_speed']}"^^xsd:float ;
+                            dbp:belongsTo dbpedia:{city_name.replace(" ", "_")} .
+        """)
+
+    insert_query = f"""
+    PREFIX dbp: <http://dbpedia.org/property/>
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+    PREFIX dbpedia: <http://dbpedia.org/resource/>
+
+    INSERT DATA {{
+        {' '.join(insert_statements)}
+    }}
+    """
+    try:
+        insert_response  = requests.post(endpoint, data=insert_query, headers=headers, auth=HTTPBasicAuth(username, password))
+
+        if insert_response .status_code == 200:
+            print("Response:", response.text)
+        elif insert_response .status_code == 204:
+            print("New forecasts inserted successfully!")
+        else:
+            print(f"Error: {insert_response .status_code}, {insert_response .text}")
+    except Exception as e:
+        print(f"Error performing update: {e}")
+
 
 # Main function to fetch and save forecast data
 def fetch_forecast_data(city_name):
@@ -105,6 +172,7 @@ def fetch_forecast_data(city_name):
         forecasts = get_forecast(lat, lon)
         if forecasts:
             save_forecast_as_rdf(city_name, forecasts)
+            update_forecasts(city_name, "http://localhost:3030/smartcity-kb/update", forecasts)
 
 # Schedule the script to run every 3 hours
 def schedule_forecast_data(city_name):

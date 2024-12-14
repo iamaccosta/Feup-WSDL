@@ -1,4 +1,5 @@
 import os
+import sys
 from SPARQLWrapper import SPARQLWrapper, JSON
 from rdflib import Graph, Namespace, URIRef, Literal
 from rdflib.namespace import RDF, RDFS, XSD
@@ -57,8 +58,6 @@ def save_to_rdf(city_name, weather_data):
     
     # Base URI for the city's climate data
     climate_base_uri = URIRef(f"{DBPEDIA}{city_name}/climate")
-
-    print("Weather Data: ", weather_data)
     
     # Add monthly weather data
     for entry in weather_data:
@@ -72,10 +71,8 @@ def save_to_rdf(city_name, weather_data):
         # Select only the first value if multiple values are present
         if "highC" in entry:
             highC = entry["highC"]["value"]
-            print(f"HighC of Month {month}: ", highC)
             if isinstance(highC, list):
                 highC = highC[0]  # Take the first value
-                print("reduced ", highC)
             g.add((month_uri, DBP.highC, Literal(float(highC), datatype=XSD.float)))
         
         if "lowC" in entry:
@@ -109,9 +106,70 @@ def save_to_rdf(city_name, weather_data):
     g.serialize(destination=filename, format="turtle")
     print(f"Monthly weather data for {city_name} saved to {filename}")
 
+# Function to insert data into Fuseki
+def insert_monthly_weather_into_fuseki(city_name, weather_data):
+    insert_statements = []
+
+    # Base URI for the city's climate data
+    climate_base_uri = f"http://dbpedia.org/resource/{city_name}/climate"
+
+    # Construct INSERT statements for each month's data
+    for entry in weather_data:
+        month = entry["month"]["value"]
+        month_uri = f"<{climate_base_uri}/{month}>"
+        statements = [
+            f"{month_uri} a dbp:Climate ;",
+            f"    rdfs:label \"{month}\"@en ;",
+            f"    dbp:month \"{month}\"^^xsd:string ;"
+        ]
+
+        if "highC" in entry:
+            statements.append(f"    dbp:highC \"{entry['highC']['value']}\"^^xsd:float ;")
+        if "lowC" in entry:
+            statements.append(f"    dbp:lowC \"{entry['lowC']['value']}\"^^xsd:float ;")
+        if "meanC" in entry:
+            statements.append(f"    dbp:meanC \"{entry['meanC']['value']}\"^^xsd:float ;")
+        if "precipitationDays" in entry:
+            statements.append(f"    dbp:precipitationDays \"{entry['precipitationDays']['value']}\"^^xsd:float ;")
+        if "precipitationMm" in entry:
+            statements.append(f"    dbp:precipitationMm \"{entry['precipitationMm']['value']}\"^^xsd:float .")
+        
+        insert_statements.append("\n".join(statements))
+
+    # Construct the full INSERT DATA query
+    insert_query = f"""
+    PREFIX dbp: <http://dbpedia.org/property/>
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+    INSERT DATA {{
+        {" ".join(insert_statements)}
+    }}
+    """
+
+    # Send the query to the Fuseki server
+    try:
+        headers = {"Content-Type": "application/sparql-update"}
+        response = requests.post(
+            fuseki_endpoint,
+            data=insert_query,
+            headers=headers,
+            auth=HTTPBasicAuth(fuseki_username, fuseki_password),
+        )
+        if response.status_code == 204:
+            print(f"Monthly weather data for {city_name} inserted successfully into Fuseki.")
+        else:
+            print(f"Error inserting monthly weather data into Fuseki: {response.status_code}, {response.text}")
+    except Exception as e:
+        print(f"Error inserting monthly weather data into Fuseki: {e}")
+
 # Main script
 if __name__ == "__main__":
-    city_name = "Barcelona"  # Replace with your city name
+    if len(sys.argv) != 2:
+        print("Usage: python script_name.py <city_name>")
+        sys.exit(1)
+    
+    city_name = sys.argv[1].strip().title()
     weather_data = get_monthly_weather_conditions(city_name)
     
     if weather_data:
