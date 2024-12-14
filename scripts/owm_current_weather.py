@@ -187,7 +187,7 @@ def fetch_weather_data(city_name):
         if weather_info:
             save_weather_as_rdf(city_name, weather_info)
             direct_sparql_update("http://localhost:3030/smartcity-kb/update", weather_info)
-            direct_sparql_query_get("http://localhost:3030/smartcity-kb/query")
+            direct_sparql_query_post("http://localhost:3030/smartcity-kb/query")
 
 # Schedule the script to run every 10 minutes
 def schedule_weather_data(city_name):

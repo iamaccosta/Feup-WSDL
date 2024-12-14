@@ -1,3 +1,4 @@
+import sys
 from SPARQLWrapper import SPARQLWrapper, JSON
 from rdflib import Graph, Namespace, URIRef, Literal
 from rdflib.namespace import RDF, RDFS
@@ -46,7 +47,7 @@ def save_to_rdf(city_name, data):
     
     # Add data to graph
     g.add((city_uri, RDFS.label, Literal(data["name"]["value"], lang="en")))
-    g.add((city_uri, DBPEDIA_ONT.abstract, Literal(data["description"]["value"], lang="en")))
+    g.add((city_uri, DBPEDIA_ONT.description, Literal(data["description"]["value"], lang="en")))
     g.add((city_uri, GEO.lat, Literal(data["latitude"]["value"], datatype=XSD.float)))
     g.add((city_uri, GEO.long, Literal(data["longitude"]["value"], datatype=XSD.float)))
     
@@ -55,12 +56,48 @@ def save_to_rdf(city_name, data):
     g.serialize(destination=filename, format="turtle")
     print(f"Data for {city_name} saved to {filename}")
 
+# Function to insert data into Fuseki
+def insert_data_into_fuseki(city_name, data):
+    insert_query = f"""
+    PREFIX dbo: <http://dbpedia.org/ontology/>
+    PREFIX dbpedia: <http://dbpedia.org/resource/>
+    PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+    INSERT DATA {{
+        dbpedia:{city_name.replace(" ", "_")} rdfs:label "{data['name']['value']}"@en ;
+            dbo:description "{data['description']['value']}"@en ;
+            geo:lat "{data['latitude']['value']}"^^xsd:float ;
+            geo:long "{data['longitude']['value']}"^^xsd:float .
+    }}
+    """
+    try:
+        headers = {"Content-Type": "application/sparql-update"}
+        response = requests.post(
+            fuseki_endpoint,
+            data=insert_query,
+            headers=headers,
+            auth=HTTPBasicAuth(fuseki_username, fuseki_password),
+        )
+        if response.status_code == 204:
+            print(f"Data for {city_name} inserted successfully into Fuseki.")
+        else:
+            print(f"Error inserting data into Fuseki: {response.status_code}, {response.text}")
+    except Exception as e:
+        print(f"Error inserting data into Fuseki: {e}")
+
 # Main script
 if __name__ == "__main__":
-    city_name = "Barcelona"  # Replace with the desired city name
+    if len(sys.argv) != 2:
+        print("Usage: python script_name.py <city_name>")
+        sys.exit(1)
+
+    city_name = sys.argv[1].strip().title()
     city_data = get_static_city_data(city_name)
     
     if city_data:
         save_to_rdf(city_name, city_data)
+        # insert_data_into_fuseki(city_name, city_data)
     else:
         print(f"No data found for {city_name}.")
