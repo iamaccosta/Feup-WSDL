@@ -1,7 +1,9 @@
 import sys
+import requests
 from SPARQLWrapper import SPARQLWrapper, JSON
 from rdflib import Graph, Namespace, URIRef, Literal
 from rdflib.namespace import RDF, RDFS
+from requests.auth import HTTPBasicAuth
 
 # Define namespaces
 DBPEDIA = Namespace("http://dbpedia.org/resource/")
@@ -58,6 +60,7 @@ def save_to_rdf(city_name, data):
 
 # Function to insert data into Fuseki
 def insert_data_into_fuseki(city_name, data):
+    fuseki_endpoint = "http://localhost:3030/smartcity-kb/update"
     insert_query = f"""
     PREFIX dbo: <http://dbpedia.org/ontology/>
     PREFIX dbpedia: <http://dbpedia.org/resource/>
@@ -74,11 +77,14 @@ def insert_data_into_fuseki(city_name, data):
     """
     try:
         headers = {"Content-Type": "application/sparql-update"}
+        username = "admin"
+        password = "smartcity-kb"
+
         response = requests.post(
             fuseki_endpoint,
             data=insert_query,
             headers=headers,
-            auth=HTTPBasicAuth(fuseki_username, fuseki_password),
+            auth=HTTPBasicAuth(username, password),
         )
         if response.status_code == 204:
             print(f"Data for {city_name} inserted successfully into Fuseki.")
@@ -98,6 +104,6 @@ if __name__ == "__main__":
     
     if city_data:
         save_to_rdf(city_name, city_data)
-        # insert_data_into_fuseki(city_name, city_data)
+        insert_data_into_fuseki(city_name, city_data)
     else:
         print(f"No data found for {city_name}.")

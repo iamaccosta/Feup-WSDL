@@ -6,12 +6,15 @@ import pandas as pd
 import numpy as np
 import threading
 import concurrent.futures
+import time
+import schedule
 from datetime import datetime
 from time import sleep
 from sklearn.cluster import DBSCAN
 from geopy.distance import great_circle
 from rdflib import Graph, Namespace, URIRef, Literal
 from rdflib.namespace import RDF, XSD
+from requests.auth import HTTPBasicAuth
 
 # Define API Key and endpoint
 TMB_API_KEY = 'eb439a2ff7c70b6daf9f7e5becebecec'
@@ -19,6 +22,11 @@ TMB_APP_ID = '48f061ed'
 
 EX = Namespace("http://example.org/busstop#")
 GEO = Namespace("http://www.w3.org/2003/01/geo/wgs84_pos#")
+
+# Define Fuseki endpoint and credentials
+FUSEKI_ENDPOINT = "http://localhost:3030/smartcity-kb/update"
+FUSEKI_USER = "admin"
+FUSEKI_PASSWORD = "smartcity-kb"
 
 # Retrieves the important information from "parades.csv" into "paragens_bus_barcelona.csv"
 def extract_bus_stop_info(input_file, output_file):
@@ -152,8 +160,79 @@ def create_rdf(stop_data, output_folder, city_name):
     g.serialize(destination=output_path, format="turtle")
     print(f"RDF data saved to {output_path}")
 
+# Function to generate SPARQL DELETE query
+def generate_delete_query():
+    return """
+    PREFIX ex: <http://example.org/busstop#>
+    DELETE WHERE {
+        ?s a ex:BusStop .
+        ?s ex:hasNextBus ?b .
+        ?b a ex:BusInfo .
+    }
+    """
+
+# Function to generate SPARQL INSERT query
+def generate_insert_query(stop_data, city_name):
+    triples = []
+    city_uri = f"ex:{city_name.replace(' ', '_')}"
+
+    for stop in stop_data:
+        stop_uri = f"ex:stop_{stop['stop_id']}"
+        triples.append(f"{stop_uri} a ex:BusStop ;")
+        triples.append(f"    ex:stopId \"{stop['stop_id']}\"^^xsd:string ;")
+        triples.append(f"    ex:stopName \"{stop['stop_name']}\"^^xsd:string ;")
+        triples.append(f"    geo:lat \"{stop['latitude']}\"^^xsd:float ;")
+        triples.append(f"    geo:long \"{stop['longitude']}\"^^xsd:float ;")
+        triples.append(f"    ex:isLocatedIn {city_uri} .")
+
+        for bus in stop.get("next_buses", []):
+            if isinstance(bus, dict) and "line" in bus and "destination" in bus:
+                bus_uri = f"<{stop_uri}/bus_{bus['line']}_{bus['destination'].replace(' ', '_')}>"
+                triples.append(f"{bus_uri} a ex:BusInfo ;")
+                triples.append(f"    ex:destination \"{bus['destination']}\"^^xsd:string ;")
+                triples.append(f"    ex:line \"{bus['line']}\"^^xsd:string ;")
+                triples.append(f"    ex:timeInMinutes \"{bus.get('t-in-min', 0)}\"^^xsd:int .")
+                triples.append(f"{stop_uri} ex:hasNextBus {bus_uri} .")
+
+    return f"""
+    PREFIX ex: <http://example.org/busstop#>
+    PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+    PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+    INSERT DATA {{
+        {" ".join(triples)}
+    }}
+    """
+
+# Function to update data in Fuseki
+def update_fuseki(city_name, stop_data):
+    print("Updating RDF data in Fuseki...")
+
+    try:
+        delete_query = generate_delete_query()
+        insert_query = generate_insert_query(stop_data, city_name)
+
+        headers = {"Content-Type": "application/sparql-update"}
+
+        # Execute DELETE query
+        delete_response = requests.post(FUSEKI_ENDPOINT, data=delete_query, headers=headers, auth=HTTPBasicAuth(FUSEKI_USER, FUSEKI_PASSWORD))
+        if delete_response.status_code != 204:
+            print(f"Failed to delete data: {delete_response.status_code}, {delete_response.text}")
+            return
+        
+        print("Deleted existing Bus Stops RDF data in Fuseki.")
+
+        # Execute INSERT query
+        insert_response = requests.post(FUSEKI_ENDPOINT, data=insert_query, headers=headers, auth=HTTPBasicAuth(FUSEKI_USER, FUSEKI_PASSWORD))
+        if insert_response.status_code == 204:
+            print("RDF data updated successfully in Fuseki.")
+        else:
+            print(f"Failed to insert data: {insert_response.status_code}, {insert_response.text}")
+    except Exception as e:
+        print(f"Error updating Fuseki: {e}")
+
 # Main function to fetch bus stop data
 def fetch_bus_stop_data(csv_file, output_folder, city_name):
+    print(f"Fetching bus stop data for {city_name}...")
     stop_data = []
 
     # Create output folder if it doesn't exist
@@ -186,6 +265,11 @@ def fetch_bus_stop_data(csv_file, output_folder, city_name):
 
     # Create RDF
     create_rdf(stop_data, output_folder, city_name)
+    update_fuseki(city_name, stop_data)
+
+# Schedule the script to run every 10 minutes
+def schedule_bus_stops(city_name, output_folder, input_file):
+    schedule.every(10).seconds.do(fetch_bus_stop_data, city_name=city_name, output_folder=output_folder, csv_file=input_file)
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
@@ -197,6 +281,13 @@ if __name__ == "__main__":
     # input_file = "./data/parades.csv"
     # output_file = "./data/paragens_bus_barcelona.csv"
     # extract_bus_stop_info(input_file, output_file)
+
     input_file = f"./data/paragens_bus_{city_name.lower()}.csv"
     output_folder = "./data/"
+
     fetch_bus_stop_data(input_file, output_folder, city_name)
+    
+    schedule_bus_stops(city_name, output_folder, input_file)
+    while True:
+        schedule.run_pending()
+        time.sleep(1) 

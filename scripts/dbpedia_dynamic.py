@@ -1,8 +1,10 @@
 import os
 import sys
+import requests
 from SPARQLWrapper import SPARQLWrapper, JSON
 from rdflib import Graph, Namespace, URIRef, Literal
 from rdflib.namespace import RDF, RDFS, XSD
+from requests.auth import HTTPBasicAuth
 
 # Define namespaces
 DBPEDIA = Namespace("http://dbpedia.org/resource/")
@@ -108,6 +110,7 @@ def save_to_rdf(city_name, weather_data):
 
 # Function to insert data into Fuseki
 def insert_monthly_weather_into_fuseki(city_name, weather_data):
+    fuseki_endpoint = "http://localhost:3030/smartcity-kb/update"
     insert_statements = []
 
     # Base URI for the city's climate data
@@ -150,11 +153,14 @@ def insert_monthly_weather_into_fuseki(city_name, weather_data):
     # Send the query to the Fuseki server
     try:
         headers = {"Content-Type": "application/sparql-update"}
+        username = "admin"
+        password = "smartcity-kb"
+
         response = requests.post(
             fuseki_endpoint,
             data=insert_query,
             headers=headers,
-            auth=HTTPBasicAuth(fuseki_username, fuseki_password),
+            auth=HTTPBasicAuth(username, password),
         )
         if response.status_code == 204:
             print(f"Monthly weather data for {city_name} inserted successfully into Fuseki.")
@@ -174,6 +180,7 @@ if __name__ == "__main__":
     
     if weather_data:
         save_to_rdf(city_name, weather_data)
+        insert_monthly_weather_into_fuseki(city_name, weather_data)
     else:
         print(f"No monthly weather data found for {city_name}.")
 
