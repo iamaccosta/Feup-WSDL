@@ -18,8 +18,6 @@ def get_staticinfo():
 
     city = request.args.get('q')
 
-    print("data", city)
-
     query = f"""
     PREFIX dbo: <http://dbpedia.org/ontology/>
     PREFIX dbpedia: <http://dbpedia.org/resource/>
@@ -44,12 +42,35 @@ def get_staticinfo():
             current_temp = data['results']['bindings'][0]['temperature']['value']
             current_humidity = data['results']['bindings'][0]['humidity']['value']
 
-            return jsonify({
-                'city': city,
-                'abstract': abstract, 
-                'current_temp': current_temp, 
-                'current_humidity': current_humidity,
+            accept_header = request.headers.get("Accept", "application/json")
+
+            if "application/ld+json" in accept_header:
+                return jsonify({
+                    '@context': 'http://schema.org',
+                    'city': city,
+                    'abstract': abstract,
+                    'current_temp': current_temp,
+                    'current_humidity': current_humidity,
                 }), 200
+            elif 'application/rdf+xml' in accept_header:
+                return Response(response.content, content_type='application/rdf+xml')
+            elif 'text/turtle' in accept_header:
+                return Response(response.content, content_type='text/turtle')
+            elif 'application/json' in accept_header:
+                return jsonify({
+                    'city': city,
+                    'abstract': abstract,
+                    'current_temp': current_temp,
+                    'current_humidity': current_humidity,
+                }), 200
+            else:
+                return jsonify({
+                    'city': city,
+                    'abstract': abstract,
+                    'current_temp': current_temp,
+                    'current_humidity': current_humidity,
+                }), 200
+                
         else:
             return f"Error: {response.status_code}, {response.text}"
     except Exception as e:

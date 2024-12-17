@@ -27,7 +27,6 @@ export async function loader() {
     }
 }
 
-
 export default function ForecastChart() {
     const { imageUrlTemp } = useLoaderData();
 
