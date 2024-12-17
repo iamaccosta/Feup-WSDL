@@ -40,7 +40,7 @@ def get_staticinfo():
             # current_windSpeed = data['results']['bindings'][0]['wind']['value']
 
             return jsonify({
-                'abstratc': abstract, 
+                'abstract': abstract, 
                 'current_temp': current_temp, 
                 'current_humidity': current_humidity,
                 # 'current_weather': current_weatherCondition,
