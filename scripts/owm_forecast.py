@@ -16,9 +16,9 @@ GEO_API_URL = "http://api.openweathermap.org/geo/1.0/direct"
 FORECAST_API_URL = "https://api.openweathermap.org/data/2.5/forecast"
 
 # RDF Namespaces
+SCKB = Namespace("http://example.org/smartcity#")
 DBPEDIA = Namespace("http://dbpedia.org/resource/")
-DBP = Namespace("http://dbpedia.org/property/")
-GEO = Namespace("http://www.w3.org/2003/01/geo/wgs84_pos#")
+XSD = Namespace("http://www.w3.org/2001/XMLSchema#")
 
 script = "graphics_forecast.py"
 
@@ -65,105 +65,72 @@ def get_forecast(lat, lon):
         print(f"Error fetching forecast data: {e}")
         return None
 
-# Function to save forecast data as RDF Turtle
+# Save forecasts to RDF
 def save_forecast_as_rdf(city_name, forecasts):
-    try:
-        # Create RDF graph
-        g = Graph()
-        g.bind("dbp", DBP)
-        g.bind("rdfs", RDFS)
+    g = Graph()
+    g.bind("sckb", SCKB)
+    g.bind("rdfs", RDFS)
 
-        # Define the base URI for forecasts
-        base_uri = f"http://dbpedia.org/resource/{city_name.replace(' ', '_')}/Forecast/"
+    city_uri = URIRef(SCKB[city_name.replace(" ", "_")])
+    forecast_base = f"http://example.org/smartcity#{city_name.replace(' ', '_')}/Forecast/"
 
-        # Add forecast data to RDF graph
-        for forecast in forecasts:
-            forecast_uri = URIRef(base_uri + forecast["datetime"].replace(":", "_"))
-            g.add((forecast_uri, RDF.type, DBP.Forecast))
-            g.add((forecast_uri, RDFS.label, Literal(forecast["datetime"])))
-            g.add((forecast_uri, DBP.temperature, Literal(forecast["temperature"], datatype=XSD.float)))
-            g.add((forecast_uri, DBP.humidity, Literal(forecast["humidity"], datatype=XSD.float)))
-            g.add((forecast_uri, DBP.weatherCondition, Literal(forecast["weather"], datatype=XSD.string)))
-            g.add((forecast_uri, DBP.windSpeed, Literal(forecast["wind_speed"], datatype=XSD.float)))
+    for forecast in forecasts:
+        forecast_uri = URIRef(f"{forecast_base}{forecast['datetime'].replace(':', '_')}")
+        g.add((forecast_uri, RDF.type, SCKB.Forecast))
+        g.add((forecast_uri, RDFS.label, Literal(f"Forecast on {forecast['datetime'].replace('T', ' ')}", lang="en")))
+        g.add((forecast_uri, SCKB.temperature, Literal(forecast["temperature"], datatype=XSD.float)))
+        g.add((forecast_uri, SCKB.humidity, Literal(forecast["humidity"], datatype=XSD.float)))
+        g.add((forecast_uri, SCKB.weatherCondition, Literal(forecast["weather"], datatype=XSD.string)))
+        g.add((forecast_uri, SCKB.windSpeed, Literal(forecast["wind_speed"], datatype=XSD.float)))
+        g.add((forecast_uri, SCKB.belongsTo, city_uri))  # Link to City
 
-        # Save to Turtle file
-        folder_path = "./data"
-        os.makedirs(folder_path, exist_ok=True)
-        file_path = os.path.join(folder_path, f"{city_name.replace(' ', '_')}_forecast.ttl")
-        g.serialize(destination=file_path, format="turtle")
-        print(f"Forecast data saved as RDF Turtle at {file_path}")
+    folder = "./data"
+    os.makedirs(folder, exist_ok=True)
+    path = os.path.join(folder, f"{city_name.replace(' ', '_')}_forecast.ttl")
+    g.serialize(destination=path, format="turtle")
+    print(f"Forecast RDF saved at: {path}")
 
-        # if os.path.exists(script):
-        #    subprocess.run(["python3", script, city_name])
-    except Exception as e:
-        print(f"Error saving RDF data: {e}")
-
-#Updates Jena Forecasts
+# Update forecasts in Fuseki
 def update_forecasts(city_name, endpoint, forecasts):
-    headers = {"Content-Type": "application/sparql-update"}  
-    username = "admin"
-    password = "smartcity-kb"
+    headers = {"Content-Type": "application/sparql-update"}
+    auth = HTTPBasicAuth("admin", "smartcity-kb")
+    forecast_base = f"http://example.org/smartcity#{city_name.replace(' ', '_')}/Forecast/"
 
-    delete_query= f"""
-    PREFIX dbp: <http://dbpedia.org/property/>
-    PREFIX dbpedia: <http://dbpedia.org/resource/>
-
+    # DELETE existing forecasts
+    delete_query = f"""
+    PREFIX sckb: <http://example.org/smartcity#>
     DELETE WHERE {{
-        ?forecast a dbp:Forecast ;
-            dbp:humidity ?humidity ;
-            dbp:temperature ?temperature ;
-            dbp:weatherCondition ?condition ;
-            dbp:windSpeed ?windSpeed .
+        ?forecast a sckb:Forecast ;
+            ?p ?o .
     }}
     """
-    try:
-        delete_response = requests.post(endpoint, data=delete_query, headers=headers, auth=HTTPBasicAuth(username, password))
+    requests.post(endpoint, data=delete_query, headers=headers, auth=auth)
 
-        if delete_response.status_code == 200:
-            print("Response:", response.text)
-        elif delete_response.status_code == 204:
-            print("Old forecasts deleted successfully!")
-        else:
-            print(f"Error: {delete_response.status_code}, {delete_response.text}")
-    except Exception as e:
-        print(f"Error performing update: {e}")
-
-    # insert forecasts
-    insert_statements = []
-    for forecast in forecasts:
-        forecast_uri = f"<http://dbpedia.org/resource/{city_name.replace(' ', '_')}/Forecast/{forecast['datetime'].replace(':', '_')}>"
-        insert_statements.append(f"""
-            {forecast_uri} a dbp:Forecast ;
-                            rdfs:label "{forecast['datetime']}" ;
-                            dbp:humidity "{forecast['humidity']}"^^xsd:float ;
-                            dbp:temperature "{forecast['temperature']}"^^xsd:float ;
-                            dbp:weatherCondition "{forecast['weather']}"^^xsd:string ;
-                            dbp:windSpeed "{forecast['wind_speed']}"^^xsd:float ;
-                            dbp:belongsTo dbpedia:{city_name.replace(" ", "_")} .
-        """)
+    # INSERT new forecasts
+    insert_statements = [
+        f"""
+        <{forecast_base}{forecast['datetime'].replace(':', '_')}> a sckb:Forecast ;
+            rdfs:label "Forecast on {forecast['datetime'].replace('T', ' ')}"@en ;
+            sckb:temperature "{forecast['temperature']}"^^xsd:float ;
+            sckb:humidity "{forecast['humidity']}"^^xsd:float ;
+            sckb:weatherCondition "{forecast['weather']}"^^xsd:string ;
+            sckb:windSpeed "{forecast['wind_speed']}"^^xsd:float ;
+            sckb:belongsTo <http://example.org/smartcity#{city_name.replace(' ', '_')}> .
+        """
+        for forecast in forecasts
+    ]
 
     insert_query = f"""
-    PREFIX dbp: <http://dbpedia.org/property/>
+    PREFIX sckb: <http://example.org/smartcity#>
     PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
     PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-    PREFIX dbpedia: <http://dbpedia.org/resource/>
-
     INSERT DATA {{
-        {' '.join(insert_statements)}
+        {" ".join(insert_statements)}
     }}
     """
-    try:
-        insert_response  = requests.post(endpoint, data=insert_query, headers=headers, auth=HTTPBasicAuth(username, password))
-
-        if insert_response .status_code == 200:
-            print("Response:", response.text)
-        elif insert_response .status_code == 204:
-            print("New forecasts inserted successfully!")
-        else:
-            print(f"Error: {insert_response .status_code}, {insert_response .text}")
-    except Exception as e:
-        print(f"Error performing update: {e}")
-
+    response = requests.post(endpoint, data=insert_query, headers=headers, auth=auth)
+    if response.status_code == 204:
+        print("Forecast data updated successfully in Fuseki.")
 
 # Main function to fetch and save forecast data
 def fetch_forecast_data(city_name):

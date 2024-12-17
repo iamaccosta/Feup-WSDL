@@ -1,9 +1,10 @@
-@prefix dbo: <http://dbpedia.org/ontology/> .
-@prefix dbpedia: <http://dbpedia.org/resource/> .
+@prefix sckb: <http://example.org/smartcity#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
-dbpedia:Barcelona dbo:current_humidity "69"^^xsd:float ;
-    dbo:current_temperature "10.63"^^xsd:float ;
-    dbo:current_weatherCondition "clear sky"^^xsd:string ;
-    dbo:current_windSpeed "1.54"^^xsd:float .
+sckb:Barcelona a sckb:City ;
+    sckb:currentHumidity "56"^^xsd:float ;
+    sckb:currentTemperature "15.22"^^xsd:float ;
+    sckb:currentWeatherCondition "clear sky"^^xsd:string ;
+    sckb:currentWindSpeed "7.72"^^xsd:float ;
+    sckb:linkedTo <http://dbpedia.org/resource/Barcelona> .
 
