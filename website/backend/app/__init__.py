@@ -15,19 +15,23 @@ def hello_world():
 
 @app.route('/get-staticinfo')
 def get_staticinfo():
-    
-    query = """
+
+    city = request.args.get('q')
+
+    print("data", city)
+
+    query = f"""
     PREFIX dbo: <http://dbpedia.org/ontology/>
     PREFIX dbpedia: <http://dbpedia.org/resource/>
 
     SELECT ?abstract ?temperature ?humidity ?weather ?wind
-    WHERE {
-        dbpedia:Barcelona dbo:abstract ?abstract .
-        dbpedia:Barcelona dbo:current_temperature ?temperature .
-        dbpedia:Barcelona dbo:current_humidity ?humidity .
-        dbpedia:Barcelona dbo:current_weatherCondition ?weatherCondition .
-        dbpedia:Barcelona dbo:current_windSpeed ?windSpeed .
-    }
+    WHERE {{
+        dbpedia:{city} dbo:abstract ?abstract .
+        dbpedia:{city} dbo:current_temperature ?temperature .
+        dbpedia:{city} dbo:current_humidity ?humidity .
+        dbpedia:{city} dbo:current_weatherCondition ?weatherCondition .
+        dbpedia:{city} dbo:current_windSpeed ?windSpeed .
+    }}
     """
     try:
         params = {"query": query}
@@ -39,15 +43,12 @@ def get_staticinfo():
             abstract = data['results']['bindings'][0]['abstract']['value']
             current_temp = data['results']['bindings'][0]['temperature']['value']
             current_humidity = data['results']['bindings'][0]['humidity']['value']
-            # current_weatherCondition = data['results']['bindings'][0]['weather']['value']
-            # current_windSpeed = data['results']['bindings'][0]['wind']['value']
 
             return jsonify({
+                'city': city,
                 'abstract': abstract, 
                 'current_temp': current_temp, 
                 'current_humidity': current_humidity,
-                # 'current_weather': current_weatherCondition,
-                # 'current_windSpeend': current_windSpeed
                 }), 200
         else:
             return f"Error: {response.status_code}, {response.text}"
@@ -82,80 +83,33 @@ def get_forecast():
         if response.status_code == 200:
             data = response.json()['results']['bindings']
 
-            # Extract months and meanC values
             months = [entry['month']['value'] for entry in data]
             meanC = [float(entry['meanC']['value']) for entry in data]
 
-            # Sort data based on month order for better visualization
             month_order = ["January", "February", "March", "April", "May", "June", "July",
                         "August", "September", "October", "November", "December"]
             sorted_data = sorted(zip(months, meanC), key=lambda x: month_order.index(x[0]))
 
-            # Unpack the sorted data
             months_sorted, meanC_sorted = zip(*sorted_data)
 
-             # Generate the chart
             plt.figure(figsize=(10, 6))
             plt.plot(months_sorted, meanC_sorted, marker='o', linestyle='-', color='skyblue', linewidth=2)
             plt.xlabel('Month')
             plt.ylabel('Mean Temperature (Celsius)')
             plt.title('Mean Monthly Temperature')
-            plt.grid(True)  # Add grid for better readability
-            plt.xticks(rotation=45)  # Rotate x-axis labels for better visibility
+            plt.grid(True)
+            plt.xticks(rotation=45) 
             plt.tight_layout()
-
-            # Save the chart to a BytesIO object
+            
             img = io.BytesIO()
             plt.savefig(img, format='png')
             img.seek(0)
             plt.close()
 
-            # Return the image
             return Response(img.getvalue(), mimetype='image/png')
-
-            # return data
-            # abstract = data['results']['bindings'][0]['abstract']['value']
-            # current_temp = data['results']['bindings'][0]['temperature']['value']
-            # current_humidity = data['results']['bindings'][0]['humidity']['value']
-            # # current_weatherCondition = data['results']['bindings'][0]['weather']['value']
-            # # current_windSpeed = data['results']['bindings'][0]['wind']['value']
-
-            # return jsonify({
-            #     'abstract': abstract, 
-            #     'current_temp': current_temp, 
-            #     'current_humidity': current_humidity,
-            #     # 'current_weather': current_weatherCondition,
-            #     # 'current_windSpeend': current_windSpeed
-            #     }), 200
          
         else:
             return f"Error: {response.status_code}, {response.text}"
     except Exception as e:
         return f"Error performing query: {e}"
 
-
-
-
-# def direct_sparql_query_get(endpoint):
-#     query = """
-#     PREFIX dbo: <http://dbpedia.org/ontology/>
-#     PREFIX dbpedia: <http://dbpedia.org/resource/>
-
-#     SELECT ?temperature ?humidity ?weatherCondition ?windSpeed
-#     WHERE {
-#         dbpedia:Barcelona dbo:current_temperature ?temperature .
-#         dbpedia:Barcelona dbo:current_humidity ?humidity .
-#         dbpedia:Barcelona dbo:current_weatherCondition ?weatherCondition .
-#         dbpedia:Barcelona dbo:current_windSpeed ?windSpeed .
-#     }
-#     """
-#     try:
-#         params = {"query": query}
-#         response = requests.get(endpoint, params=params)
-
-#         if response.status_code == 200:
-#             print("Response:", response.text)
-#         else:
-#             print(f"Error: {response.status_code}, {response.text}")
-#     except Exception as e:
-#         print(f"Error performing query: {e}")

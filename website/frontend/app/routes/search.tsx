@@ -1,23 +1,25 @@
 import { LoaderFunctionArgs } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
+import { useLoaderData, Link } from "@remix-run/react";
 
 export async function loader({ request }: LoaderFunctionArgs) {
     
     const url = new URL(request.url);
     
     const query = url.searchParams.get("q");
+    
+    
     if (!query) {
         throw new Response("A search query must be provided", { status: 400 });
     }
 
     try {
-        const response = await fetch('http://backend:5000/get-staticinfo', {
+        const response = await fetch(`http://backend:5000/get-staticinfo?q=${query}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/ld+json',
             },
-            //body: JSON.stringify({query})
+           
         })
 
         if (!response.ok) {
@@ -38,14 +40,29 @@ export async function loader({ request }: LoaderFunctionArgs) {
 export default function Search() {
     const results = useLoaderData<typeof loader>();
 
-
-    console.log("HBCJHEFBVCHRBF", results)
     return (
         <div className="h-dvh bg-gradient-to-br from-purple-500 via-blue-400 to-blue-600 text-gray-100 flex flex-col">
     
             <header className="p-6 text-center">
-                <h1 className="text-5xl font-extrabold">Barcelona</h1>
+                <h1 className="text-4xl font-extrabold">{results.city}</h1>
             </header>
+
+            <div className="flex justify-center gap-6 mb-6">
+                
+                <Link
+                to="/forecast"
+                className="bg-purple-600 hover:bg-purple-700 text-white font-semibold py-3 px-6 rounded-lg shadow-lg transition-all"
+                >
+                Forecast
+                </Link>
+
+                <Link
+                to="/bus-station"
+                className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 px-6 rounded-lg shadow-lg transition-all"
+                >
+                Bus Station
+                </Link>
+            </div>
 
             {
                 results ? (
