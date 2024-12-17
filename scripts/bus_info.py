@@ -13,14 +13,14 @@ from time import sleep
 from sklearn.cluster import DBSCAN
 from geopy.distance import great_circle
 from rdflib import Graph, Namespace, URIRef, Literal
-from rdflib.namespace import RDF, XSD
+from rdflib.namespace import RDF, RDFS, XSD
 from requests.auth import HTTPBasicAuth
 
 # Define API Key and endpoint
 TMB_API_KEY = 'eb439a2ff7c70b6daf9f7e5becebecec'
 TMB_APP_ID = '48f061ed'
 
-EX = Namespace("http://example.org/busstop#")
+SCKB = Namespace("http://example.org/smartcity#")
 GEO = Namespace("http://www.w3.org/2003/01/geo/wgs84_pos#")
 
 # Define Fuseki endpoint and credentials
@@ -126,107 +126,118 @@ def process_stop(stop, stop_data):
 # Function to create RDF data
 def create_rdf(stop_data, output_folder, city_name):
     g = Graph()
-    g.bind("ex", EX)
+    g.bind("sckb", SCKB)
     g.bind("geo", GEO)
+    g.bind("rdfs", RDFS)
 
     # Create a city URI
-    city_uri = URIRef(f"{EX}{city_name.replace(' ', '_')}")
+    city_uri = URIRef(f"{SCKB}{city_name.replace(' ', '_')}")
 
     # Add stops to RDF
     for stop in stop_data:
-        stop_uri = URIRef(f"{EX}stop_{stop['stop_id']}")
-        g.add((stop_uri, RDF.type, EX.BusStop))
-        g.add((stop_uri, EX.stopId, Literal(stop['stop_id'], datatype=XSD.string)))
-        g.add((stop_uri, EX.stopName, Literal(stop['stop_name'], datatype=XSD.string)))
+        stop_uri = URIRef(f"{SCKB}{city_name.replace(' ', '_')}/BusStop/stop_{stop['stop_id']}")
+        g.add((stop_uri, RDF.type, SCKB.BusStop))
+        g.add((stop_uri, RDFS.label, Literal(f"Bus Stop {stop['stop_name']}", lang="en")))
+        g.add((stop_uri, SCKB.busStopId, Literal(stop['stop_id'], datatype=XSD.string)))
+        g.add((stop_uri, SCKB.busStopName, Literal(stop['stop_name'], datatype=XSD.string)))
         g.add((stop_uri, GEO.lat, Literal(stop['latitude'], datatype=XSD.float)))
         g.add((stop_uri, GEO.long, Literal(stop['longitude'], datatype=XSD.float)))
 
         # Link to city
-        g.add((stop_uri, EX.isLocatedIn, city_uri))
+        g.add((stop_uri, SCKB.isLocatedIn, city_uri))
 
         # Add bus information
         for bus in stop.get("next_buses", []):
             if isinstance(bus, dict) and "line" in bus and "destination" in bus:
                 bus_uri = URIRef(f"{stop_uri}/bus_{bus['line']}_{bus['destination'].replace(' ', '_')}")
-                g.add((bus_uri, RDF.type, EX.BusInfo))
-                g.add((bus_uri, EX.line, Literal(bus['line'], datatype=XSD.string)))
-                g.add((bus_uri, EX.destination, Literal(bus['destination'], datatype=XSD.string)))
-                g.add((bus_uri, EX.timeInMinutes, Literal(bus.get("t-in-min", 0), datatype=XSD.int)))
-                g.add((stop_uri, EX.hasNextBus, bus_uri))
+                g.add((bus_uri, RDF.type, SCKB.BusInfo))
+                g.add((bus_uri, RDFS.label, Literal(f"Bus {bus['line']} to {bus['destination']}", lang="en")))
+                g.add((bus_uri, SCKB.line, Literal(bus['line'], datatype=XSD.string)))
+                g.add((bus_uri, SCKB.destination, Literal(bus['destination'], datatype=XSD.string)))
+                g.add((bus_uri, SCKB.timeInMinutes, Literal(bus.get("t-in-min", 0), datatype=XSD.int)))
+                g.add((stop_uri, SCKB.hasNextBus, bus_uri))
 
     # Save RDF file
     output_file_name = f"{city_name.replace(' ', '_')}_bus_stops.ttl"
     output_path = os.path.join(output_folder, output_file_name)
+    os.makedirs(output_folder, exist_ok=True)
     g.serialize(destination=output_path, format="turtle")
     print(f"RDF data saved to {output_path}")
 
-# Function to generate SPARQL DELETE query
+# Generate DELETE query
 def generate_delete_query():
     return """
-    PREFIX ex: <http://example.org/busstop#>
+    PREFIX sckb: <http://example.org/smartcity#>
     DELETE WHERE {
-        ?s a ex:BusStop .
-        ?s ex:hasNextBus ?b .
-        ?b a ex:BusInfo .
+        ?stop a sckb:BusStop ;
+            ?p ?o .
+
+        ?stop sckb:hasNextBus ?bus .
+        ?bus ?bp ?bo .
+    };
+
+    DELETE WHERE {
+        ?stop a sckb:BusStop ;
+            ?p ?o .
     }
     """
 
-# Function to generate SPARQL INSERT query
+# Generate INSERT query
 def generate_insert_query(stop_data, city_name):
+    city_uri = f"<http://example.org/smartcity#{city_name.replace(' ', '_')}>"
     triples = []
-    city_uri = f"ex:{city_name.replace(' ', '_')}"
 
     for stop in stop_data:
-        stop_uri = f"ex:stop_{stop['stop_id']}"
-        triples.append(f"{stop_uri} a ex:BusStop ;")
-        triples.append(f"    ex:stopId \"{stop['stop_id']}\"^^xsd:string ;")
-        triples.append(f"    ex:stopName \"{stop['stop_name']}\"^^xsd:string ;")
+        # Use fully qualified URI for the stop
+        stop_uri = f"<http://example.org/smartcity#{city_name.replace(' ', '_')}/BusStop/stop_{stop['stop_id']}>"
+        triples.append(f"{stop_uri} a sckb:BusStop ;")
+        triples.append(f"    rdfs:label \"Bus Stop {stop['stop_name']}\"@en ;")
+        triples.append(f"    sckb:busStopId \"{stop['stop_id']}\"^^xsd:string ;")
+        triples.append(f"    sckb:busStopName \"{stop['stop_name']}\"^^xsd:string ;")
         triples.append(f"    geo:lat \"{stop['latitude']}\"^^xsd:float ;")
         triples.append(f"    geo:long \"{stop['longitude']}\"^^xsd:float ;")
-        triples.append(f"    ex:isLocatedIn {city_uri} .")
+        triples.append(f"    sckb:isLocatedIn {city_uri} .")
 
         for bus in stop.get("next_buses", []):
-            if isinstance(bus, dict) and "line" in bus and "destination" in bus:
-                bus_uri = f"<{stop_uri}/bus_{bus['line']}_{bus['destination'].replace(' ', '_')}>"
-                triples.append(f"{bus_uri} a ex:BusInfo ;")
-                triples.append(f"    ex:destination \"{bus['destination']}\"^^xsd:string ;")
-                triples.append(f"    ex:line \"{bus['line']}\"^^xsd:string ;")
-                triples.append(f"    ex:timeInMinutes \"{bus.get('t-in-min', 0)}\"^^xsd:int .")
-                triples.append(f"{stop_uri} ex:hasNextBus {bus_uri} .")
+            # Use fully qualified URI for the bus
+            bus_uri = f"<http://example.org/smartcity#{city_name.replace(' ', '_')}/BusStop/stop_{stop['stop_id']}/bus_{bus['line']}_{bus['destination'].replace(' ', '_')}>"
+            triples.append(f"{bus_uri} a sckb:BusInfo ;")
+            triples.append(f"    rdfs:label \"Bus {bus['line']} to {bus['destination']}\"@en ;")
+            triples.append(f"    sckb:line \"{bus['line']}\"^^xsd:string ;")
+            triples.append(f"    sckb:destination \"{bus['destination']}\"^^xsd:string ;")
+            triples.append(f"    sckb:timeInMinutes \"{bus.get('t-in-min', 0)}\"^^xsd:int .")
+            triples.append(f"{stop_uri} sckb:hasNextBus {bus_uri} .")
 
     return f"""
-    PREFIX ex: <http://example.org/busstop#>
+    PREFIX sckb: <http://example.org/smartcity#>
     PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
     PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
     INSERT DATA {{
         {" ".join(triples)}
     }}
     """
 
-# Function to update data in Fuseki
+# Update Fuseki
 def update_fuseki(city_name, stop_data):
-    print("Updating RDF data in Fuseki...")
+    delete_query = generate_delete_query()
+    insert_query = generate_insert_query(stop_data, city_name)
 
+    headers = {"Content-Type": "application/sparql-update"}
     try:
-        delete_query = generate_delete_query()
-        insert_query = generate_insert_query(stop_data, city_name)
-
-        headers = {"Content-Type": "application/sparql-update"}
-
-        # Execute DELETE query
+        # DELETE existing data
         delete_response = requests.post(FUSEKI_ENDPOINT, data=delete_query, headers=headers, auth=HTTPBasicAuth(FUSEKI_USER, FUSEKI_PASSWORD))
-        if delete_response.status_code != 204:
-            print(f"Failed to delete data: {delete_response.status_code}, {delete_response.text}")
-            return
-        
-        print("Deleted existing Bus Stops RDF data in Fuseki.")
+        if delete_response.status_code == 204:
+            print("Deleted existing bus stops and bus info from Fuseki.")
+        else:
+            print(f"Delete failed: {delete_response.status_code}")
 
-        # Execute INSERT query
+        # INSERT new data
         insert_response = requests.post(FUSEKI_ENDPOINT, data=insert_query, headers=headers, auth=HTTPBasicAuth(FUSEKI_USER, FUSEKI_PASSWORD))
         if insert_response.status_code == 204:
-            print("RDF data updated successfully in Fuseki.")
+            print("Inserted updated bus stop and bus info into Fuseki.")
         else:
-            print(f"Failed to insert data: {insert_response.status_code}, {insert_response.text}")
+            print(f"Insert failed: {insert_response.status_code}")
     except Exception as e:
         print(f"Error updating Fuseki: {e}")
 

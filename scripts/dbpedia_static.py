@@ -10,6 +10,7 @@ DBPEDIA = Namespace("http://dbpedia.org/resource/")
 DBPEDIA_ONT = Namespace("http://dbpedia.org/ontology/")
 GEO = Namespace("http://www.w3.org/2003/01/geo/wgs84_pos#")
 XSD = Namespace("http://www.w3.org/2001/XMLSchema#")
+SCKB = Namespace("http://example.org/smartcity#")
 
 # SPARQL endpoint for DBpedia
 sparql = SPARQLWrapper("http://dbpedia.org/sparql")
@@ -43,15 +44,19 @@ def save_to_rdf(city_name, data):
     g.bind("dbpedia", DBPEDIA)
     g.bind("dbo", DBPEDIA_ONT)
     g.bind("geo", GEO)
+    g.bind("sckb", SCKB)
     
-    # Create city URI
-    city_uri = URIRef(DBPEDIA + city_name)
-    
+    # Custom and external URIs
+    city_uri = URIRef(SCKB + city_name.replace(" ", "_"))  # Custom URI for the city
+    dbpedia_uri = URIRef(DBPEDIA + city_name.replace(" ", "_"))  # External DBpedia link
+
     # Add data to graph
+    g.add((city_uri, RDF.type, SCKB.City))
     g.add((city_uri, RDFS.label, Literal(data["name"]["value"], lang="en")))
-    g.add((city_uri, DBPEDIA_ONT.description, Literal(data["description"]["value"], lang="en")))
+    g.add((city_uri, SCKB.description, Literal(data["description"]["value"], lang="en")))
     g.add((city_uri, GEO.lat, Literal(data["latitude"]["value"], datatype=XSD.float)))
     g.add((city_uri, GEO.long, Literal(data["longitude"]["value"], datatype=XSD.float)))
+    g.add((city_uri, SCKB.linkedTo, dbpedia_uri))  # Linking to external DBpedia entity
     
     # Save graph to a TTL file
     filename = f"./data/{city_name}_static_data.ttl"
@@ -62,17 +67,19 @@ def save_to_rdf(city_name, data):
 def insert_data_into_fuseki(city_name, data):
     fuseki_endpoint = "http://localhost:3030/smartcity-kb/update"
     insert_query = f"""
-    PREFIX dbo: <http://dbpedia.org/ontology/>
-    PREFIX dbpedia: <http://dbpedia.org/resource/>
+    PREFIX sckb: <http://example.org/smartcity#>
     PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
-    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
     PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    PREFIX dbpedia: <http://dbpedia.org/resource/>
 
     INSERT DATA {{
-        dbpedia:{city_name.replace(" ", "_")} rdfs:label "{data['name']['value']}"@en ;
-            dbo:description "{data['description']['value']}"@en ;
+        sckb:{city_name.replace(" ", "_")} a sckb:City ;
+            rdfs:label "{data['name']['value']}"@en ;
+            sckb:description "{data['description']['value']}"@en ;
             geo:lat "{data['latitude']['value']}"^^xsd:float ;
-            geo:long "{data['longitude']['value']}"^^xsd:float .
+            geo:long "{data['longitude']['value']}"^^xsd:float ;
+            sckb:linkedTo dbpedia:{city_name.replace(" ", "_")} .
     }}
     """
     try:
