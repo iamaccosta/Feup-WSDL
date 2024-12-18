@@ -2,39 +2,18 @@ import { json } from "@remix-run/node";
 import { useLoaderData, Link } from "@remix-run/react";
 
 
-export async function loader({request}) {
-    const url = new URL(request.url); // Parse the request URL
-    const city = url.searchParams.get("city"); // Get the 'city' parameter
+export async function loader({ request }: { request: Request }) {
+    const url = new URL(request.url); 
+    const city = url.searchParams.get("city");
 
-    console.log("CITY", city)
-
-    try {
-        const response = await fetch(`http://backend:5000/get-forecast?=${city}`, {
-            method: 'GET',
-            headers: {
-                'Accept': 'image/png',
-            },
-        });
-
-        if (!response.ok) {
-            throw new Response("Failed fetching chart", { status: response.status });
-        }
-
-        const imageBlob = await response.blob();
-        const imageUrl = URL.createObjectURL(imageBlob);
-
-        console.log(imageUrl)
-
-        return imageUrl; 
-
-    } catch (error) {
-        console.error("Error fetching chart:", error);
-        throw new Response('Error fetching chart', { status: 500 });
+    return {
+      forecastUrl: `http://localhost:5000/get-forecast?city=${city}`,
+      precipitationUrl: `http://localhost:5000/get-precipitation?city=${city}`,
     }
 }
 
 export default function ForecastChart() {
-    const imageUrlTemp = useLoaderData();
+    const { forecastUrl, precipitationUrl } = useLoaderData<typeof loader>();
 
     return (
         <div className="h-dvh bg-gradient-to-br from-purple-500 via-blue-400 to-blue-600 text-gray-100 flex flex-col p-6">
@@ -48,9 +27,9 @@ export default function ForecastChart() {
             
             <div className="flex-1 text-center">
               <h3 className="text-lg font-semibold mb-4">Mean Monthly Temperature</h3>
-              {imageUrlTemp ? (
+              {forecastUrl ? (
                 <img
-                  src={imageUrlTemp}
+                  src={forecastUrl}
                   alt="Mean Monthly Temperature Chart"
                   className="max-w-full h-auto rounded-lg shadow-lg"
                 />
@@ -58,11 +37,18 @@ export default function ForecastChart() {
                 <p className="text-center text-gray-300">Loading temperature chart...</p>
               )}
             </div>
-    
             
             <div className="flex-1 text-center">
               <h3 className="text-lg font-semibold mb-4">Precipitation Monthly</h3>
-              
+              {precipitationUrl ? (
+                <img
+                  src={precipitationUrl}
+                  alt="Mean Monthly Precipitation and Density Chart"
+                  className="max-w-full h-auto rounded-lg shadow-lg"
+                />
+              ) : (
+                <p className="text-center text-gray-300">Loading temperature chart...</p>
+              )}
             </div>
           </div>
         </div>

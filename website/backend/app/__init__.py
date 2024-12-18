@@ -29,7 +29,7 @@ def get_staticinfo():
     """
     try:
         params = {"query": query}
-        headers = {"Accept": "application/json"}
+        headers = {"Accept": "application/sparql-results+json"}
         
         response = requests.get(SPARQL_ENDPOINT, params=params, headers=headers)
 
@@ -54,19 +54,19 @@ def get_staticinfo():
 def get_currentWeather():
     city = request.args.get('q')
 
-    query ="""
+    query =f"""
     PREFIX sckb: <http://example.org/smartcity#>
     PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
     SELECT ?currentTemp ?cond 
-    WHERE {
-        sckb:Barcelona sckb:currentTemperature ?currentTemp .
-  		sckb:Barcelona sckb:currentWeatherCondition ?cond .
-    }
+    WHERE {{
+        sckb:{city} sckb:currentTemperature ?currentTemp .
+  		sckb:{city} sckb:currentWeatherCondition ?cond .
+    }}
     """
     try:
         params = {"query": query}
-        headers = {"Accept": "application/json"}
+        headers = {"Accept": "application/sparql-results+json"}
 
         response = requests.get(SPARQL_ENDPOINT, params=params, headers=headers)
         
@@ -90,7 +90,7 @@ def get_currentWeather():
 @app.route('/get-forecast')
 def get_forecast():
 
-    # ADD CITY TO TH QUERY
+    # Need to change this, after check if chart appears in the backend
     city = request.args.get('q')
 
     query = """
@@ -99,8 +99,8 @@ def get_forecast():
     PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 
     SELECT ?monthLabel (MAX(?highCValue) AS ?highTemp) (MIN(?lowCValue) AS ?lowTemp) (SAMPLE(?meanCValue) AS ?meanTemp)
-    WHERE {
-    ?month a sckb:MonthlyWeatherSummary ;
+    WHERE {{
+        ?month a sckb:MonthlyWeatherSummary ;
             rdfs:label ?monthLabel ;
             sckb:highC ?highC ;
             sckb:lowC ?lowC ;
@@ -110,14 +110,14 @@ def get_forecast():
     BIND(xsd:float(?highC) AS ?highCValue)
     BIND(xsd:float(?lowC) AS ?lowCValue)
     BIND(xsd:float(?meanC) AS ?meanCValue)
-    }
+    }}
     GROUP BY ?monthLabel
     ORDER BY ?monthLabel
     """
 
     try:
         params = {"query": query}
-        headers = {"Accept": "application/json"}
+        headers = {"Accept": "application/sparql-results+json"}
 
         response = requests.get(SPARQL_ENDPOINT, params=params, headers=headers)
 
@@ -162,7 +162,7 @@ def get_forecast():
 @app.route('/get-precipitation')
 def get_precipitation():
 
-    # ADD CITY TO TH QUERY
+     # Need to change this, after check if chart appears in the backend
     city = request.args.get('q')
 
     query = """
@@ -184,7 +184,9 @@ def get_precipitation():
 
     try:
         params = {"query": query}
-        response = requests.get(SPARQL_ENDPOINT, params=params)
+        headers = {"Accept": "application/sparql-results+json"}
+
+        response = requests.get(SPARQL_ENDPOINT, params=params, headers=headers)
         
         if response.status_code == 200:
             data = response.json()['results']['bindings']
@@ -194,12 +196,12 @@ def get_precipitation():
             precipMm = [float(entry['sPrecipMm']['value']) for entry in data]
 
             month_order = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
-            sorted_data = sorted(zip(months, precipDays, precipMm), 
-                                 key=lambda x: month_order.index(x[0]))
+            sorted_data = sorted(zip(months, precipDays, precipMm), key=lambda x: month_order.index(x[0]))
 
             months_sorted, precipDays_sorted, precipMm_sorted = zip(*sorted_data)
 
             fig, ax1 = plt.subplots(figsize=(10, 6))
+            plt.title('Monthly Precipitation')
 
             ax1.bar(months_sorted, precipDays_sorted, color='skyblue', alpha=0.7, label='Precipitation Days')
             ax1.set_xlabel('Month')
@@ -211,7 +213,6 @@ def get_precipitation():
             ax2.set_ylabel('Precipitation (mm)', color='purple')
             ax2.tick_params(axis='y', labelcolor='purple')
 
-            plt.title('Monthly Precipitation')
             fig.tight_layout()
 
             precipitation_chart = io.BytesIO()
