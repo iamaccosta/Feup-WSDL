@@ -1,11 +1,25 @@
 from flask import Flask, request, jsonify, Response
 import requests
 import matplotlib.pyplot as plt
-import io
+import multiprocessing
+import functools
+
+from . import plots
 
 app = Flask(__name__)
 
 SPARQL_ENDPOINT = "http://fuseki:3030/smartcity-kb/query"
+
+render_pool = multiprocessing.Pool(processes=2)
+
+def on_render_pool(func):
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        return render_pool.apply(func, args, kwargs)
+    return wrapper
+
+generate_forecast = on_render_pool(plots.generate_forecast)
+generate_precipitation = on_render_pool(plots.generate_precipitation)
 
 @app.route("/")
 def hello_world():
@@ -132,31 +146,14 @@ def get_forecast():
             month_order = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
             sorted_data = sorted(zip(months, meanC, highC, lowC), key=lambda x: month_order.index(x[0]))
 
-            months_sorted, meanC_sorted, highC_sorted, lowC_sorted = zip(*sorted_data)
-
-            plt.figure(figsize=(10, 6))
-            plt.plot(months_sorted, meanC_sorted, marker='o', linestyle='-', label='Mean Temperature', color='skyblue', linewidth=2)
-            plt.plot(months_sorted, highC_sorted, marker='o', linestyle='--', label='High Temperature', color='orange', linewidth=2)
-            plt.plot(months_sorted, lowC_sorted, marker='o', linestyle=':', label='Low Temperature', color='purple', linewidth=2)
-            plt.xlabel('Month')
-            plt.ylabel('Temperature (Celsius)')
-            plt.title('Monthly Temperatures')
-            plt.grid(True)
-            plt.xticks(rotation=45)
-            plt.legend()
-            plt.tight_layout()
-            
-            temperature_chart = io.BytesIO()
-            plt.savefig(temperature_chart, format='png')
-            temperature_chart.seek(0)
-            plt.close()
-
+            temperature_chart = generate_forecast(sorted_data) 
             return Response(temperature_chart.getvalue(), mimetype='image/png')
          
         else:
             return f"Error: {response.status_code}, {response.text}"
     except Exception as e:
         return f"Error performing query: {e}"
+    
 
 
 @app.route('/get-precipitation')
@@ -198,28 +195,7 @@ def get_precipitation():
             month_order = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
             sorted_data = sorted(zip(months, precipDays, precipMm), key=lambda x: month_order.index(x[0]))
 
-            months_sorted, precipDays_sorted, precipMm_sorted = zip(*sorted_data)
-
-            fig, ax1 = plt.subplots(figsize=(10, 6))
-            plt.title('Monthly Precipitation')
-
-            ax1.bar(months_sorted, precipDays_sorted, color='skyblue', alpha=0.7, label='Precipitation Days')
-            ax1.set_xlabel('Month')
-            ax1.set_ylabel('Precipitation Days', color='skyblue')
-            ax1.tick_params(axis='y', labelcolor='skyblue')
-
-            ax2 = ax1.twinx()
-            ax2.plot(months_sorted, precipMm_sorted, color='purple', marker='o', label='Precipitation (mm)')
-            ax2.set_ylabel('Precipitation (mm)', color='purple')
-            ax2.tick_params(axis='y', labelcolor='purple')
-
-            fig.tight_layout()
-
-            precipitation_chart = io.BytesIO()
-            plt.savefig(precipitation_chart, format='png')
-            precipitation_chart.seek(0)
-            plt.close()
-
+            precipitation_chart = generate_precipitation(sorted_data) 
             return Response(precipitation_chart.getvalue(), mimetype='image/png')
 
         else:
