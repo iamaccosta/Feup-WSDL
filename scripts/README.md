@@ -1,5 +1,9 @@
 # Information about the Scripts
 
+To test every feature you must use 'Barcelona' or 'barcelona' as `<city-name>`.
+
+---
+
 ### DBPedia Static Data
 The script `dbpedia_static.py` collects the static data required for a city.
 - description
@@ -9,9 +13,9 @@ The script `dbpedia_static.py` collects the static data required for a city.
 **Run** `python/python3 dbpedia_static.py <city-name>`
 
 #
-### DBPedia Monthly Climate Conditions
-The script `dbpedia_dynamic.py` collects the monthly climate conditions of a city. Assuming that these values are oftenly updated, for the future relevance the script should run every 24 hours.<br>
-Monthly Climate Conditions: (a dbp:Climate)
+### DBPedia Monthly Weather Summary
+The script `dbpedia_dynamic.py` collects the monthly weather summary of a city. Assuming that these values are oftenly updated, for the future relevance the script should run every 24 hours.<br>
+Monthly Weather Summary: (a sckb:MonthlyWeatherSummary)
 - HighC 
 - LowC
 - MeanC
@@ -35,7 +39,7 @@ The script `owm_current_weather.py` collects the current weather conditions for 
 #
 ### OpenWeatherMap API - Forecasts
 The scrpit `owm_forecast.py` collects the forecasts for the next 5 days for a city, presenting a set of values for each 3 hours.<br>
-Forecast: (a dbp:Forecast)
+Forecast: (a sckb:Forecast)
 - temperature
 - humidity
 - weatherCondition -> `Sky Info`
@@ -46,14 +50,14 @@ Forecast: (a dbp:Forecast)
 #
 ### Bus Stops Information
 The script `bus_info.py` collects the bus stops of a city. Each bus stop contains the next bus information. for performance purposes the script uses **multithreading** for the operation of data collection.<br>
-Bus Stop: (a ex:BusStop)
+Bus Stop: (a sckb:BusStop)
 - stopId
 - stopName -> `Stop Name and Destination`
 - lat
 - long
 - hasNextBus -> `Array with Next Bus`
 
-Next Bus Information: (a ex:BusInfo)
+Next Bus Information: (a sckb:BusInfo)
 - destination
 - line
 - timeInMinutes -> `Time left in Minutes for its Arrival`
@@ -73,12 +77,12 @@ Next Bus Information: (a ex:BusInfo)
 ```
 endpoint = "http://localhost:3030/smartcity/query"
 query = """
-PREFIX dbo: <http://dbpedia.org/ontology/>
-PREFIX dbpedia: <http://dbpedia.org/resource/>
+PREFIX sckb: <http://example.org/smartcity#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
 SELECT ?temperature
 WHERE {
-    dbpedia:Barcelona dbo:current_temperature ?temperature .
+    sckb:Barcelona sckb:currentTemperature ?temperature .
 }
 """
 
@@ -94,12 +98,12 @@ response = requests.get(endpoint, params=params)
 ```
 endpoint = "http://localhost:3030/smartcity/query"
 query = """
-PREFIX dbo: <http://dbpedia.org/ontology/>
-PREFIX dbpedia: <http://dbpedia.org/resource/>
+PREFIX sckb: <http://example.org/smartcity#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
 SELECT ?temperature
 WHERE {
-    dbpedia:Barcelona dbo:current_temperature ?temperature .
+    sckb:Barcelona sckb:currentTemperature ?temperature .
 }
 """
 
@@ -119,20 +123,32 @@ response = requests.post(endpoint, data=query, headers=headers)
 ```
 endpoint = "http://localhost:3030/smartcity-kb/update"
 query = f"""
-    PREFIX dbo: <http://dbpedia.org/ontology/>
-    PREFIX dbpedia: <http://dbpedia.org/resource/>
-    PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX sckb: <http://example.org/smartcity#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 
-    DELETE {{
-        dbpedia:Barcelona dbo:current_temperature ?oldTemperature .
+DELETE {{
+    {city_uri} sckb:currentTemperature ?oldTemperature ;
+                sckb:currentHumidity ?oldHumidity ;
+                sckb:currentWeatherCondition ?oldCondition ;
+                sckb:currentWindSpeed ?oldWindSpeed .
+}}
+INSERT {{
+    {city_uri} a sckb:City ;
+                sckb:currentTemperature "{weather_info['current_temperature']}"^^xsd:float ;
+                sckb:currentHumidity "{weather_info['current_humidity']}"^^xsd:float ;
+                sckb:currentWeatherCondition "{weather_info['current_weather']}"^^xsd:string ;
+                sckb:currentWindSpeed "{weather_info['current_wind_speed']}"^^xsd:float ;
+                sckb:linkedTo {dbpedia_link} .
+}}
+WHERE {{
+    OPTIONAL {{
+        {city_uri} sckb:currentTemperature ?oldTemperature ;
+                    sckb:currentHumidity ?oldHumidity ;
+                    sckb:currentWeatherCondition ?oldCondition ;
+                    sckb:currentWindSpeed ?oldWindSpeed .
     }}
-    INSERT {{
-        dbpedia:Barcelona dbo:current_temperature "{weather_info['current_temperature']}"^^xsd:float .
-    }}
-    WHERE {{
-        dbpedia:Barcelona dbo:current_temperature ?oldTemperature .
-    }}
-    """
+}}
+"""
 
 headers = {"Content-Type": "application/sparql-update"}
         
