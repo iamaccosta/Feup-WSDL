@@ -7,7 +7,6 @@ export async function loader({ request }: LoaderFunctionArgs) {
     
     const query = url.searchParams.get("q");
     
-    
     if (!query) {
         throw new Response("A search query must be provided", { status: 400 });
     }
@@ -19,7 +18,6 @@ export async function loader({ request }: LoaderFunctionArgs) {
                 'Content-Type': 'application/json',
                 'Accept': 'application/ld+json',
             },
-           
         })
 
         if (!response.ok) {
@@ -50,7 +48,7 @@ export default function Search() {
             <div className="flex justify-center gap-6 mb-6">
                 
                 <Link
-                to="/forecast"
+                to={`/forecast?city=${results.city}`}
                 className="bg-purple-600 hover:bg-purple-700 text-white font-semibold py-3 px-6 rounded-lg shadow-lg transition-all"
                 >
                 Forecast
@@ -69,16 +67,9 @@ export default function Search() {
                 <div className="flex-1 flex flex-col items-center justify-start p-6 overflow-y-auto">
                     <div className="flex flex-col gap-6 text-lg max-w-4xl">
                         <p className="text-sm text-justify text-gray-200">
-                            {results.abstract || "No abstract provided"}
+                            {results.description || "No abstract provided"}
                         </p>
-                        <p className="text-gray-200">
-                        <strong>Current Temperature:</strong>{" "}
-                            {results.current_temp ? `${results.current_temp}°C` : "N/A"}
-                        </p>
-                        <p className="text-gray-200">
-                        <strong>Current Humidity:</strong>{" "}
-                            {results.current_humidity ? `${results.current_humidity}%` : "N/A"}
-                        </p>
+                        
                     </div>
                 </div>
                 ) : (

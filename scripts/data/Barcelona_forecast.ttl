@@ -1,284 +1,324 @@
-@prefix dbp: <http://dbpedia.org/property/> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sckb: <http://example.org/smartcity#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
-<http://dbpedia.org/resource/Barcelona/Forecast/2024-12-13T15_00_00> a dbp:Forecast ;
-    rdfs:label "2024-12-13T15:00:00" ;
-    dbp:humidity "69"^^xsd:float ;
-    dbp:temperature "14.6"^^xsd:float ;
-    dbp:weatherCondition "scattered clouds"^^xsd:string ;
-    dbp:windSpeed "2.47"^^xsd:float .
+<http://example.org/smartcity#Barcelona/Forecast/2024-12-17T18_00_00> a sckb:Forecast ;
+    rdfs:label "Forecast on 2024-12-17 18:00:00"@en ;
+    sckb:belongsTo sckb:Barcelona ;
+    sckb:humidity "61"^^xsd:float ;
+    sckb:temperature "14.38"^^xsd:float ;
+    sckb:weatherCondition "scattered clouds"^^xsd:string ;
+    sckb:windSpeed "5.04"^^xsd:float .
 
-<http://dbpedia.org/resource/Barcelona/Forecast/2024-12-13T18_00_00> a dbp:Forecast ;
-    rdfs:label "2024-12-13T18:00:00" ;
-    dbp:humidity "68"^^xsd:float ;
-    dbp:temperature "13.79"^^xsd:float ;
-    dbp:weatherCondition "scattered clouds"^^xsd:string ;
-    dbp:windSpeed "2.9"^^xsd:float .
+<http://example.org/smartcity#Barcelona/Forecast/2024-12-17T21_00_00> a sckb:Forecast ;
+    rdfs:label "Forecast on 2024-12-17 21:00:00"@en ;
+    sckb:belongsTo sckb:Barcelona ;
+    sckb:humidity "59"^^xsd:float ;
+    sckb:temperature "13.25"^^xsd:float ;
+    sckb:weatherCondition "broken clouds"^^xsd:string ;
+    sckb:windSpeed "4.23"^^xsd:float .
 
-<http://dbpedia.org/resource/Barcelona/Forecast/2024-12-13T21_00_00> a dbp:Forecast ;
-    rdfs:label "2024-12-13T21:00:00" ;
-    dbp:humidity "69"^^xsd:float ;
-    dbp:temperature "12.18"^^xsd:float ;
-    dbp:weatherCondition "clear sky"^^xsd:string ;
-    dbp:windSpeed "2.81"^^xsd:float .
+<http://example.org/smartcity#Barcelona/Forecast/2024-12-18T00_00_00> a sckb:Forecast ;
+    rdfs:label "Forecast on 2024-12-18 00:00:00"@en ;
+    sckb:belongsTo sckb:Barcelona ;
+    sckb:humidity "55"^^xsd:float ;
+    sckb:temperature "11.51"^^xsd:float ;
+    sckb:weatherCondition "overcast clouds"^^xsd:string ;
+    sckb:windSpeed "3.53"^^xsd:float .
 
-<http://dbpedia.org/resource/Barcelona/Forecast/2024-12-14T00_00_00> a dbp:Forecast ;
-    rdfs:label "2024-12-14T00:00:00" ;
-    dbp:humidity "67"^^xsd:float ;
-    dbp:temperature "11.11"^^xsd:float ;
-    dbp:weatherCondition "clear sky"^^xsd:string ;
-    dbp:windSpeed "3.12"^^xsd:float .
+<http://example.org/smartcity#Barcelona/Forecast/2024-12-18T03_00_00> a sckb:Forecast ;
+    rdfs:label "Forecast on 2024-12-18 03:00:00"@en ;
+    sckb:belongsTo sckb:Barcelona ;
+    sckb:humidity "50"^^xsd:float ;
+    sckb:temperature "10.79"^^xsd:float ;
+    sckb:weatherCondition "broken clouds"^^xsd:string ;
+    sckb:windSpeed "2.68"^^xsd:float .
 
-<http://dbpedia.org/resource/Barcelona/Forecast/2024-12-14T03_00_00> a dbp:Forecast ;
-    rdfs:label "2024-12-14T03:00:00" ;
-    dbp:humidity "69"^^xsd:float ;
-    dbp:temperature "10.29"^^xsd:float ;
-    dbp:weatherCondition "scattered clouds"^^xsd:string ;
-    dbp:windSpeed "3.47"^^xsd:float .
+<http://example.org/smartcity#Barcelona/Forecast/2024-12-18T06_00_00> a sckb:Forecast ;
+    rdfs:label "Forecast on 2024-12-18 06:00:00"@en ;
+    sckb:belongsTo sckb:Barcelona ;
+    sckb:humidity "49"^^xsd:float ;
+    sckb:temperature "10.11"^^xsd:float ;
+    sckb:weatherCondition "scattered clouds"^^xsd:string ;
+    sckb:windSpeed "2.25"^^xsd:float .
 
-<http://dbpedia.org/resource/Barcelona/Forecast/2024-12-14T06_00_00> a dbp:Forecast ;
-    rdfs:label "2024-12-14T06:00:00" ;
-    dbp:humidity "70"^^xsd:float ;
-    dbp:temperature "9.62"^^xsd:float ;
-    dbp:weatherCondition "scattered clouds"^^xsd:string ;
-    dbp:windSpeed "3.85"^^xsd:float .
+<http://example.org/smartcity#Barcelona/Forecast/2024-12-18T09_00_00> a sckb:Forecast ;
+    rdfs:label "Forecast on 2024-12-18 09:00:00"@en ;
+    sckb:belongsTo sckb:Barcelona ;
+    sckb:humidity "43"^^xsd:float ;
+    sckb:temperature "10.92"^^xsd:float ;
+    sckb:weatherCondition "clear sky"^^xsd:string ;
+    sckb:windSpeed "1.82"^^xsd:float .
 
-<http://dbpedia.org/resource/Barcelona/Forecast/2024-12-14T09_00_00> a dbp:Forecast ;
-    rdfs:label "2024-12-14T09:00:00" ;
-    dbp:humidity "66"^^xsd:float ;
-    dbp:temperature "9.79"^^xsd:float ;
-    dbp:weatherCondition "scattered clouds"^^xsd:string ;
-    dbp:windSpeed "4.1"^^xsd:float .
+<http://example.org/smartcity#Barcelona/Forecast/2024-12-18T12_00_00> a sckb:Forecast ;
+    rdfs:label "Forecast on 2024-12-18 12:00:00"@en ;
+    sckb:belongsTo sckb:Barcelona ;
+    sckb:humidity "35"^^xsd:float ;
+    sckb:temperature "14.06"^^xsd:float ;
+    sckb:weatherCondition "clear sky"^^xsd:string ;
+    sckb:windSpeed "0.64"^^xsd:float .
 
-<http://dbpedia.org/resource/Barcelona/Forecast/2024-12-14T12_00_00> a dbp:Forecast ;
-    rdfs:label "2024-12-14T12:00:00" ;
-    dbp:humidity "52"^^xsd:float ;
-    dbp:temperature "12.36"^^xsd:float ;
-    dbp:weatherCondition "few clouds"^^xsd:string ;
-    dbp:windSpeed "2.67"^^xsd:float .
+<http://example.org/smartcity#Barcelona/Forecast/2024-12-18T15_00_00> a sckb:Forecast ;
+    rdfs:label "Forecast on 2024-12-18 15:00:00"@en ;
+    sckb:belongsTo sckb:Barcelona ;
+    sckb:humidity "40"^^xsd:float ;
+    sckb:temperature "15.17"^^xsd:float ;
+    sckb:weatherCondition "clear sky"^^xsd:string ;
+    sckb:windSpeed "2.19"^^xsd:float .
 
-<http://dbpedia.org/resource/Barcelona/Forecast/2024-12-14T15_00_00> a dbp:Forecast ;
-    rdfs:label "2024-12-14T15:00:00" ;
-    dbp:humidity "48"^^xsd:float ;
-    dbp:temperature "13.28"^^xsd:float ;
-    dbp:weatherCondition "clear sky"^^xsd:string ;
-    dbp:windSpeed "0.83"^^xsd:float .
+<http://example.org/smartcity#Barcelona/Forecast/2024-12-18T18_00_00> a sckb:Forecast ;
+    rdfs:label "Forecast on 2024-12-18 18:00:00"@en ;
+    sckb:belongsTo sckb:Barcelona ;
+    sckb:humidity "51"^^xsd:float ;
+    sckb:temperature "14.18"^^xsd:float ;
+    sckb:weatherCondition "clear sky"^^xsd:string ;
+    sckb:windSpeed "1.99"^^xsd:float .
 
-<http://dbpedia.org/resource/Barcelona/Forecast/2024-12-14T18_00_00> a dbp:Forecast ;
-    rdfs:label "2024-12-14T18:00:00" ;
-    dbp:humidity "58"^^xsd:float ;
-    dbp:temperature "12.22"^^xsd:float ;
-    dbp:weatherCondition "clear sky"^^xsd:string ;
-    dbp:windSpeed "1"^^xsd:float .
+<http://example.org/smartcity#Barcelona/Forecast/2024-12-18T21_00_00> a sckb:Forecast ;
+    rdfs:label "Forecast on 2024-12-18 21:00:00"@en ;
+    sckb:belongsTo sckb:Barcelona ;
+    sckb:humidity "54"^^xsd:float ;
+    sckb:temperature "13.6"^^xsd:float ;
+    sckb:weatherCondition "scattered clouds"^^xsd:string ;
+    sckb:windSpeed "2.98"^^xsd:float .
 
-<http://dbpedia.org/resource/Barcelona/Forecast/2024-12-14T21_00_00> a dbp:Forecast ;
-    rdfs:label "2024-12-14T21:00:00" ;
-    dbp:humidity "64"^^xsd:float ;
-    dbp:temperature "11.58"^^xsd:float ;
-    dbp:weatherCondition "broken clouds"^^xsd:string ;
-    dbp:windSpeed "1.74"^^xsd:float .
+<http://example.org/smartcity#Barcelona/Forecast/2024-12-19T00_00_00> a sckb:Forecast ;
+    rdfs:label "Forecast on 2024-12-19 00:00:00"@en ;
+    sckb:belongsTo sckb:Barcelona ;
+    sckb:humidity "54"^^xsd:float ;
+    sckb:temperature "12.97"^^xsd:float ;
+    sckb:weatherCondition "broken clouds"^^xsd:string ;
+    sckb:windSpeed "2.96"^^xsd:float .
 
-<http://dbpedia.org/resource/Barcelona/Forecast/2024-12-15T00_00_00> a dbp:Forecast ;
-    rdfs:label "2024-12-15T00:00:00" ;
-    dbp:humidity "64"^^xsd:float ;
-    dbp:temperature "10.52"^^xsd:float ;
-    dbp:weatherCondition "scattered clouds"^^xsd:string ;
-    dbp:windSpeed "2.73"^^xsd:float .
+<http://example.org/smartcity#Barcelona/Forecast/2024-12-19T03_00_00> a sckb:Forecast ;
+    rdfs:label "Forecast on 2024-12-19 03:00:00"@en ;
+    sckb:belongsTo sckb:Barcelona ;
+    sckb:humidity "57"^^xsd:float ;
+    sckb:temperature "12.74"^^xsd:float ;
+    sckb:weatherCondition "broken clouds"^^xsd:string ;
+    sckb:windSpeed "3.47"^^xsd:float .
 
-<http://dbpedia.org/resource/Barcelona/Forecast/2024-12-15T03_00_00> a dbp:Forecast ;
-    rdfs:label "2024-12-15T03:00:00" ;
-    dbp:humidity "64"^^xsd:float ;
-    dbp:temperature "9.7"^^xsd:float ;
-    dbp:weatherCondition "clear sky"^^xsd:string ;
-    dbp:windSpeed "1.96"^^xsd:float .
+<http://example.org/smartcity#Barcelona/Forecast/2024-12-19T06_00_00> a sckb:Forecast ;
+    rdfs:label "Forecast on 2024-12-19 06:00:00"@en ;
+    sckb:belongsTo sckb:Barcelona ;
+    sckb:humidity "57"^^xsd:float ;
+    sckb:temperature "13.31"^^xsd:float ;
+    sckb:weatherCondition "broken clouds"^^xsd:string ;
+    sckb:windSpeed "4.19"^^xsd:float .
 
-<http://dbpedia.org/resource/Barcelona/Forecast/2024-12-15T06_00_00> a dbp:Forecast ;
-    rdfs:label "2024-12-15T06:00:00" ;
-    dbp:humidity "63"^^xsd:float ;
-    dbp:temperature "8.89"^^xsd:float ;
-    dbp:weatherCondition "clear sky"^^xsd:string ;
-    dbp:windSpeed "2.27"^^xsd:float .
+<http://example.org/smartcity#Barcelona/Forecast/2024-12-19T09_00_00> a sckb:Forecast ;
+    rdfs:label "Forecast on 2024-12-19 09:00:00"@en ;
+    sckb:belongsTo sckb:Barcelona ;
+    sckb:humidity "56"^^xsd:float ;
+    sckb:temperature "15.02"^^xsd:float ;
+    sckb:weatherCondition "overcast clouds"^^xsd:string ;
+    sckb:windSpeed "6.05"^^xsd:float .
 
-<http://dbpedia.org/resource/Barcelona/Forecast/2024-12-15T09_00_00> a dbp:Forecast ;
-    rdfs:label "2024-12-15T09:00:00" ;
-    dbp:humidity "56"^^xsd:float ;
-    dbp:temperature "9.39"^^xsd:float ;
-    dbp:weatherCondition "clear sky"^^xsd:string ;
-    dbp:windSpeed "2.45"^^xsd:float .
+<http://example.org/smartcity#Barcelona/Forecast/2024-12-19T12_00_00> a sckb:Forecast ;
+    rdfs:label "Forecast on 2024-12-19 12:00:00"@en ;
+    sckb:belongsTo sckb:Barcelona ;
+    sckb:humidity "55"^^xsd:float ;
+    sckb:temperature "17.06"^^xsd:float ;
+    sckb:weatherCondition "overcast clouds"^^xsd:string ;
+    sckb:windSpeed "7.13"^^xsd:float .
 
-<http://dbpedia.org/resource/Barcelona/Forecast/2024-12-15T12_00_00> a dbp:Forecast ;
-    rdfs:label "2024-12-15T12:00:00" ;
-    dbp:humidity "46"^^xsd:float ;
-    dbp:temperature "11.76"^^xsd:float ;
-    dbp:weatherCondition "few clouds"^^xsd:string ;
-    dbp:windSpeed "0.38"^^xsd:float .
+<http://example.org/smartcity#Barcelona/Forecast/2024-12-19T15_00_00> a sckb:Forecast ;
+    rdfs:label "Forecast on 2024-12-19 15:00:00"@en ;
+    sckb:belongsTo sckb:Barcelona ;
+    sckb:humidity "54"^^xsd:float ;
+    sckb:temperature "18.03"^^xsd:float ;
+    sckb:weatherCondition "clear sky"^^xsd:string ;
+    sckb:windSpeed "6.59"^^xsd:float .
 
-<http://dbpedia.org/resource/Barcelona/Forecast/2024-12-15T15_00_00> a dbp:Forecast ;
-    rdfs:label "2024-12-15T15:00:00" ;
-    dbp:humidity "46"^^xsd:float ;
-    dbp:temperature "12.65"^^xsd:float ;
-    dbp:weatherCondition "clear sky"^^xsd:string ;
-    dbp:windSpeed "2.26"^^xsd:float .
+<http://example.org/smartcity#Barcelona/Forecast/2024-12-19T18_00_00> a sckb:Forecast ;
+    rdfs:label "Forecast on 2024-12-19 18:00:00"@en ;
+    sckb:belongsTo sckb:Barcelona ;
+    sckb:humidity "63"^^xsd:float ;
+    sckb:temperature "14.69"^^xsd:float ;
+    sckb:weatherCondition "clear sky"^^xsd:string ;
+    sckb:windSpeed "0.97"^^xsd:float .
 
-<http://dbpedia.org/resource/Barcelona/Forecast/2024-12-15T18_00_00> a dbp:Forecast ;
-    rdfs:label "2024-12-15T18:00:00" ;
-    dbp:humidity "55"^^xsd:float ;
-    dbp:temperature "12"^^xsd:float ;
-    dbp:weatherCondition "clear sky"^^xsd:string ;
-    dbp:windSpeed "1.61"^^xsd:float .
+<http://example.org/smartcity#Barcelona/Forecast/2024-12-19T21_00_00> a sckb:Forecast ;
+    rdfs:label "Forecast on 2024-12-19 21:00:00"@en ;
+    sckb:belongsTo sckb:Barcelona ;
+    sckb:humidity "77"^^xsd:float ;
+    sckb:temperature "14.11"^^xsd:float ;
+    sckb:weatherCondition "light rain"^^xsd:string ;
+    sckb:windSpeed "4.24"^^xsd:float .
 
-<http://dbpedia.org/resource/Barcelona/Forecast/2024-12-15T21_00_00> a dbp:Forecast ;
-    rdfs:label "2024-12-15T21:00:00" ;
-    dbp:humidity "54"^^xsd:float ;
-    dbp:temperature "11.41"^^xsd:float ;
-    dbp:weatherCondition "clear sky"^^xsd:string ;
-    dbp:windSpeed "1.5"^^xsd:float .
+<http://example.org/smartcity#Barcelona/Forecast/2024-12-20T00_00_00> a sckb:Forecast ;
+    rdfs:label "Forecast on 2024-12-20 00:00:00"@en ;
+    sckb:belongsTo sckb:Barcelona ;
+    sckb:humidity "79"^^xsd:float ;
+    sckb:temperature "12.86"^^xsd:float ;
+    sckb:weatherCondition "light rain"^^xsd:string ;
+    sckb:windSpeed "1.92"^^xsd:float .
 
-<http://dbpedia.org/resource/Barcelona/Forecast/2024-12-16T00_00_00> a dbp:Forecast ;
-    rdfs:label "2024-12-16T00:00:00" ;
-    dbp:humidity "54"^^xsd:float ;
-    dbp:temperature "10.1"^^xsd:float ;
-    dbp:weatherCondition "clear sky"^^xsd:string ;
-    dbp:windSpeed "2.65"^^xsd:float .
+<http://example.org/smartcity#Barcelona/Forecast/2024-12-20T03_00_00> a sckb:Forecast ;
+    rdfs:label "Forecast on 2024-12-20 03:00:00"@en ;
+    sckb:belongsTo sckb:Barcelona ;
+    sckb:humidity "69"^^xsd:float ;
+    sckb:temperature "11.19"^^xsd:float ;
+    sckb:weatherCondition "light rain"^^xsd:string ;
+    sckb:windSpeed "1.22"^^xsd:float .
 
-<http://dbpedia.org/resource/Barcelona/Forecast/2024-12-16T03_00_00> a dbp:Forecast ;
-    rdfs:label "2024-12-16T03:00:00" ;
-    dbp:humidity "56"^^xsd:float ;
-    dbp:temperature "9.21"^^xsd:float ;
-    dbp:weatherCondition "clear sky"^^xsd:string ;
-    dbp:windSpeed "2.79"^^xsd:float .
+<http://example.org/smartcity#Barcelona/Forecast/2024-12-20T06_00_00> a sckb:Forecast ;
+    rdfs:label "Forecast on 2024-12-20 06:00:00"@en ;
+    sckb:belongsTo sckb:Barcelona ;
+    sckb:humidity "53"^^xsd:float ;
+    sckb:temperature "9.9"^^xsd:float ;
+    sckb:weatherCondition "few clouds"^^xsd:string ;
+    sckb:windSpeed "1.93"^^xsd:float .
 
-<http://dbpedia.org/resource/Barcelona/Forecast/2024-12-16T06_00_00> a dbp:Forecast ;
-    rdfs:label "2024-12-16T06:00:00" ;
-    dbp:humidity "55"^^xsd:float ;
-    dbp:temperature "8.66"^^xsd:float ;
-    dbp:weatherCondition "clear sky"^^xsd:string ;
-    dbp:windSpeed "2.28"^^xsd:float .
+<http://example.org/smartcity#Barcelona/Forecast/2024-12-20T09_00_00> a sckb:Forecast ;
+    rdfs:label "Forecast on 2024-12-20 09:00:00"@en ;
+    sckb:belongsTo sckb:Barcelona ;
+    sckb:humidity "52"^^xsd:float ;
+    sckb:temperature "10.2"^^xsd:float ;
+    sckb:weatherCondition "clear sky"^^xsd:string ;
+    sckb:windSpeed "0.23"^^xsd:float .
 
-<http://dbpedia.org/resource/Barcelona/Forecast/2024-12-16T09_00_00> a dbp:Forecast ;
-    rdfs:label "2024-12-16T09:00:00" ;
-    dbp:humidity "48"^^xsd:float ;
-    dbp:temperature "9.4"^^xsd:float ;
-    dbp:weatherCondition "clear sky"^^xsd:string ;
-    dbp:windSpeed "2.21"^^xsd:float .
+<http://example.org/smartcity#Barcelona/Forecast/2024-12-20T12_00_00> a sckb:Forecast ;
+    rdfs:label "Forecast on 2024-12-20 12:00:00"@en ;
+    sckb:belongsTo sckb:Barcelona ;
+    sckb:humidity "47"^^xsd:float ;
+    sckb:temperature "11.89"^^xsd:float ;
+    sckb:weatherCondition "clear sky"^^xsd:string ;
+    sckb:windSpeed "2.1"^^xsd:float .
 
-<http://dbpedia.org/resource/Barcelona/Forecast/2024-12-16T12_00_00> a dbp:Forecast ;
-    rdfs:label "2024-12-16T12:00:00" ;
-    dbp:humidity "38"^^xsd:float ;
-    dbp:temperature "11.88"^^xsd:float ;
-    dbp:weatherCondition "clear sky"^^xsd:string ;
-    dbp:windSpeed "1.58"^^xsd:float .
+<http://example.org/smartcity#Barcelona/Forecast/2024-12-20T15_00_00> a sckb:Forecast ;
+    rdfs:label "Forecast on 2024-12-20 15:00:00"@en ;
+    sckb:belongsTo sckb:Barcelona ;
+    sckb:humidity "27"^^xsd:float ;
+    sckb:temperature "13.15"^^xsd:float ;
+    sckb:weatherCondition "clear sky"^^xsd:string ;
+    sckb:windSpeed "3.08"^^xsd:float .
 
-<http://dbpedia.org/resource/Barcelona/Forecast/2024-12-16T15_00_00> a dbp:Forecast ;
-    rdfs:label "2024-12-16T15:00:00" ;
-    dbp:humidity "41"^^xsd:float ;
-    dbp:temperature "13.01"^^xsd:float ;
-    dbp:weatherCondition "clear sky"^^xsd:string ;
-    dbp:windSpeed "3.47"^^xsd:float .
+<http://example.org/smartcity#Barcelona/Forecast/2024-12-20T18_00_00> a sckb:Forecast ;
+    rdfs:label "Forecast on 2024-12-20 18:00:00"@en ;
+    sckb:belongsTo sckb:Barcelona ;
+    sckb:humidity "30"^^xsd:float ;
+    sckb:temperature "11.99"^^xsd:float ;
+    sckb:weatherCondition "clear sky"^^xsd:string ;
+    sckb:windSpeed "1.33"^^xsd:float .
 
-<http://dbpedia.org/resource/Barcelona/Forecast/2024-12-16T18_00_00> a dbp:Forecast ;
-    rdfs:label "2024-12-16T18:00:00" ;
-    dbp:humidity "52"^^xsd:float ;
-    dbp:temperature "12.38"^^xsd:float ;
-    dbp:weatherCondition "clear sky"^^xsd:string ;
-    dbp:windSpeed "4.4"^^xsd:float .
+<http://example.org/smartcity#Barcelona/Forecast/2024-12-20T21_00_00> a sckb:Forecast ;
+    rdfs:label "Forecast on 2024-12-20 21:00:00"@en ;
+    sckb:belongsTo sckb:Barcelona ;
+    sckb:humidity "35"^^xsd:float ;
+    sckb:temperature "10.91"^^xsd:float ;
+    sckb:weatherCondition "clear sky"^^xsd:string ;
+    sckb:windSpeed "1.6"^^xsd:float .
 
-<http://dbpedia.org/resource/Barcelona/Forecast/2024-12-16T21_00_00> a dbp:Forecast ;
-    rdfs:label "2024-12-16T21:00:00" ;
-    dbp:humidity "58"^^xsd:float ;
-    dbp:temperature "11.44"^^xsd:float ;
-    dbp:weatherCondition "clear sky"^^xsd:string ;
-    dbp:windSpeed "4.55"^^xsd:float .
+<http://example.org/smartcity#Barcelona/Forecast/2024-12-21T00_00_00> a sckb:Forecast ;
+    rdfs:label "Forecast on 2024-12-21 00:00:00"@en ;
+    sckb:belongsTo sckb:Barcelona ;
+    sckb:humidity "38"^^xsd:float ;
+    sckb:temperature "9.31"^^xsd:float ;
+    sckb:weatherCondition "clear sky"^^xsd:string ;
+    sckb:windSpeed "2.85"^^xsd:float .
 
-<http://dbpedia.org/resource/Barcelona/Forecast/2024-12-17T00_00_00> a dbp:Forecast ;
-    rdfs:label "2024-12-17T00:00:00" ;
-    dbp:humidity "59"^^xsd:float ;
-    dbp:temperature "10.62"^^xsd:float ;
-    dbp:weatherCondition "clear sky"^^xsd:string ;
-    dbp:windSpeed "3.24"^^xsd:float .
+<http://example.org/smartcity#Barcelona/Forecast/2024-12-21T03_00_00> a sckb:Forecast ;
+    rdfs:label "Forecast on 2024-12-21 03:00:00"@en ;
+    sckb:belongsTo sckb:Barcelona ;
+    sckb:humidity "34"^^xsd:float ;
+    sckb:temperature "8.64"^^xsd:float ;
+    sckb:weatherCondition "clear sky"^^xsd:string ;
+    sckb:windSpeed "2.54"^^xsd:float .
 
-<http://dbpedia.org/resource/Barcelona/Forecast/2024-12-17T03_00_00> a dbp:Forecast ;
-    rdfs:label "2024-12-17T03:00:00" ;
-    dbp:humidity "57"^^xsd:float ;
-    dbp:temperature "10.01"^^xsd:float ;
-    dbp:weatherCondition "clear sky"^^xsd:string ;
-    dbp:windSpeed "3.39"^^xsd:float .
+<http://example.org/smartcity#Barcelona/Forecast/2024-12-21T06_00_00> a sckb:Forecast ;
+    rdfs:label "Forecast on 2024-12-21 06:00:00"@en ;
+    sckb:belongsTo sckb:Barcelona ;
+    sckb:humidity "38"^^xsd:float ;
+    sckb:temperature "8.26"^^xsd:float ;
+    sckb:weatherCondition "clear sky"^^xsd:string ;
+    sckb:windSpeed "2.52"^^xsd:float .
 
-<http://dbpedia.org/resource/Barcelona/Forecast/2024-12-17T06_00_00> a dbp:Forecast ;
-    rdfs:label "2024-12-17T06:00:00" ;
-    dbp:humidity "58"^^xsd:float ;
-    dbp:temperature "9.5"^^xsd:float ;
-    dbp:weatherCondition "clear sky"^^xsd:string ;
-    dbp:windSpeed "3.45"^^xsd:float .
+<http://example.org/smartcity#Barcelona/Forecast/2024-12-21T09_00_00> a sckb:Forecast ;
+    rdfs:label "Forecast on 2024-12-21 09:00:00"@en ;
+    sckb:belongsTo sckb:Barcelona ;
+    sckb:humidity "37"^^xsd:float ;
+    sckb:temperature "8.61"^^xsd:float ;
+    sckb:weatherCondition "clear sky"^^xsd:string ;
+    sckb:windSpeed "3.17"^^xsd:float .
 
-<http://dbpedia.org/resource/Barcelona/Forecast/2024-12-17T09_00_00> a dbp:Forecast ;
-    rdfs:label "2024-12-17T09:00:00" ;
-    dbp:humidity "55"^^xsd:float ;
-    dbp:temperature "10.47"^^xsd:float ;
-    dbp:weatherCondition "clear sky"^^xsd:string ;
-    dbp:windSpeed "3.4"^^xsd:float .
+<http://example.org/smartcity#Barcelona/Forecast/2024-12-21T12_00_00> a sckb:Forecast ;
+    rdfs:label "Forecast on 2024-12-21 12:00:00"@en ;
+    sckb:belongsTo sckb:Barcelona ;
+    sckb:humidity "41"^^xsd:float ;
+    sckb:temperature "11.58"^^xsd:float ;
+    sckb:weatherCondition "clear sky"^^xsd:string ;
+    sckb:windSpeed "1.76"^^xsd:float .
 
-<http://dbpedia.org/resource/Barcelona/Forecast/2024-12-17T12_00_00> a dbp:Forecast ;
-    rdfs:label "2024-12-17T12:00:00" ;
-    dbp:humidity "58"^^xsd:float ;
-    dbp:temperature "13.6"^^xsd:float ;
-    dbp:weatherCondition "few clouds"^^xsd:string ;
-    dbp:windSpeed "4.39"^^xsd:float .
+<http://example.org/smartcity#Barcelona/Forecast/2024-12-21T15_00_00> a sckb:Forecast ;
+    rdfs:label "Forecast on 2024-12-21 15:00:00"@en ;
+    sckb:belongsTo sckb:Barcelona ;
+    sckb:humidity "40"^^xsd:float ;
+    sckb:temperature "12.52"^^xsd:float ;
+    sckb:weatherCondition "clear sky"^^xsd:string ;
+    sckb:windSpeed "1.47"^^xsd:float .
 
-<http://dbpedia.org/resource/Barcelona/Forecast/2024-12-17T15_00_00> a dbp:Forecast ;
-    rdfs:label "2024-12-17T15:00:00" ;
-    dbp:humidity "62"^^xsd:float ;
-    dbp:temperature "14.39"^^xsd:float ;
-    dbp:weatherCondition "overcast clouds"^^xsd:string ;
-    dbp:windSpeed "6.23"^^xsd:float .
+<http://example.org/smartcity#Barcelona/Forecast/2024-12-21T18_00_00> a sckb:Forecast ;
+    rdfs:label "Forecast on 2024-12-21 18:00:00"@en ;
+    sckb:belongsTo sckb:Barcelona ;
+    sckb:humidity "41"^^xsd:float ;
+    sckb:temperature "12.09"^^xsd:float ;
+    sckb:weatherCondition "clear sky"^^xsd:string ;
+    sckb:windSpeed "1.82"^^xsd:float .
 
-<http://dbpedia.org/resource/Barcelona/Forecast/2024-12-17T18_00_00> a dbp:Forecast ;
-    rdfs:label "2024-12-17T18:00:00" ;
-    dbp:humidity "72"^^xsd:float ;
-    dbp:temperature "13.15"^^xsd:float ;
-    dbp:weatherCondition "overcast clouds"^^xsd:string ;
-    dbp:windSpeed "4.98"^^xsd:float .
+<http://example.org/smartcity#Barcelona/Forecast/2024-12-21T21_00_00> a sckb:Forecast ;
+    rdfs:label "Forecast on 2024-12-21 21:00:00"@en ;
+    sckb:belongsTo sckb:Barcelona ;
+    sckb:humidity "39"^^xsd:float ;
+    sckb:temperature "10.8"^^xsd:float ;
+    sckb:weatherCondition "few clouds"^^xsd:string ;
+    sckb:windSpeed "2.5"^^xsd:float .
 
-<http://dbpedia.org/resource/Barcelona/Forecast/2024-12-17T21_00_00> a dbp:Forecast ;
-    rdfs:label "2024-12-17T21:00:00" ;
-    dbp:humidity "61"^^xsd:float ;
-    dbp:temperature "12.26"^^xsd:float ;
-    dbp:weatherCondition "overcast clouds"^^xsd:string ;
-    dbp:windSpeed "4.12"^^xsd:float .
+<http://example.org/smartcity#Barcelona/Forecast/2024-12-22T00_00_00> a sckb:Forecast ;
+    rdfs:label "Forecast on 2024-12-22 00:00:00"@en ;
+    sckb:belongsTo sckb:Barcelona ;
+    sckb:humidity "43"^^xsd:float ;
+    sckb:temperature "9.16"^^xsd:float ;
+    sckb:weatherCondition "clear sky"^^xsd:string ;
+    sckb:windSpeed "2.93"^^xsd:float .
 
-<http://dbpedia.org/resource/Barcelona/Forecast/2024-12-18T00_00_00> a dbp:Forecast ;
-    rdfs:label "2024-12-18T00:00:00" ;
-    dbp:humidity "51"^^xsd:float ;
-    dbp:temperature "11.84"^^xsd:float ;
-    dbp:weatherCondition "overcast clouds"^^xsd:string ;
-    dbp:windSpeed "3.39"^^xsd:float .
+<http://example.org/smartcity#Barcelona/Forecast/2024-12-22T03_00_00> a sckb:Forecast ;
+    rdfs:label "Forecast on 2024-12-22 03:00:00"@en ;
+    sckb:belongsTo sckb:Barcelona ;
+    sckb:humidity "48"^^xsd:float ;
+    sckb:temperature "8.61"^^xsd:float ;
+    sckb:weatherCondition "clear sky"^^xsd:string ;
+    sckb:windSpeed "3.23"^^xsd:float .
 
-<http://dbpedia.org/resource/Barcelona/Forecast/2024-12-18T03_00_00> a dbp:Forecast ;
-    rdfs:label "2024-12-18T03:00:00" ;
-    dbp:humidity "47"^^xsd:float ;
-    dbp:temperature "11.28"^^xsd:float ;
-    dbp:weatherCondition "overcast clouds"^^xsd:string ;
-    dbp:windSpeed "2.9"^^xsd:float .
+<http://example.org/smartcity#Barcelona/Forecast/2024-12-22T06_00_00> a sckb:Forecast ;
+    rdfs:label "Forecast on 2024-12-22 06:00:00"@en ;
+    sckb:belongsTo sckb:Barcelona ;
+    sckb:humidity "51"^^xsd:float ;
+    sckb:temperature "8.19"^^xsd:float ;
+    sckb:weatherCondition "few clouds"^^xsd:string ;
+    sckb:windSpeed "3.64"^^xsd:float .
 
-<http://dbpedia.org/resource/Barcelona/Forecast/2024-12-18T06_00_00> a dbp:Forecast ;
-    rdfs:label "2024-12-18T06:00:00" ;
-    dbp:humidity "43"^^xsd:float ;
-    dbp:temperature "10.73"^^xsd:float ;
-    dbp:weatherCondition "broken clouds"^^xsd:string ;
-    dbp:windSpeed "2.65"^^xsd:float .
+<http://example.org/smartcity#Barcelona/Forecast/2024-12-22T09_00_00> a sckb:Forecast ;
+    rdfs:label "Forecast on 2024-12-22 09:00:00"@en ;
+    sckb:belongsTo sckb:Barcelona ;
+    sckb:humidity "50"^^xsd:float ;
+    sckb:temperature "8.79"^^xsd:float ;
+    sckb:weatherCondition "scattered clouds"^^xsd:string ;
+    sckb:windSpeed "3.93"^^xsd:float .
 
-<http://dbpedia.org/resource/Barcelona/Forecast/2024-12-18T09_00_00> a dbp:Forecast ;
-    rdfs:label "2024-12-18T09:00:00" ;
-    dbp:humidity "39"^^xsd:float ;
-    dbp:temperature "11.56"^^xsd:float ;
-    dbp:weatherCondition "clear sky"^^xsd:string ;
-    dbp:windSpeed "2.32"^^xsd:float .
+<http://example.org/smartcity#Barcelona/Forecast/2024-12-22T12_00_00> a sckb:Forecast ;
+    rdfs:label "Forecast on 2024-12-22 12:00:00"@en ;
+    sckb:belongsTo sckb:Barcelona ;
+    sckb:humidity "43"^^xsd:float ;
+    sckb:temperature "12.32"^^xsd:float ;
+    sckb:weatherCondition "few clouds"^^xsd:string ;
+    sckb:windSpeed "4.46"^^xsd:float .
 
-<http://dbpedia.org/resource/Barcelona/Forecast/2024-12-18T12_00_00> a dbp:Forecast ;
-    rdfs:label "2024-12-18T12:00:00" ;
-    dbp:humidity "34"^^xsd:float ;
-    dbp:temperature "15.09"^^xsd:float ;
-    dbp:weatherCondition "scattered clouds"^^xsd:string ;
-    dbp:windSpeed "2.51"^^xsd:float .
+<http://example.org/smartcity#Barcelona/Forecast/2024-12-22T15_00_00> a sckb:Forecast ;
+    rdfs:label "Forecast on 2024-12-22 15:00:00"@en ;
+    sckb:belongsTo sckb:Barcelona ;
+    sckb:humidity "43"^^xsd:float ;
+    sckb:temperature "14.17"^^xsd:float ;
+    sckb:weatherCondition "clear sky"^^xsd:string ;
+    sckb:windSpeed "4.02"^^xsd:float .
 

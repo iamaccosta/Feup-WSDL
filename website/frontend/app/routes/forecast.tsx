@@ -1,9 +1,15 @@
-import { LoaderFunctionArgs } from "@remix-run/node";
+import { json } from "@remix-run/node";
 import { useLoaderData, Link } from "@remix-run/react";
 
-export async function loader() {
+
+export async function loader({request}) {
+    const url = new URL(request.url); // Parse the request URL
+    const city = url.searchParams.get("city"); // Get the 'city' parameter
+
+    console.log("CITY", city)
+
     try {
-        const response = await fetch('http://backend:5000/get-forecast', {
+        const response = await fetch(`http://backend:5000/get-forecast?=${city}`, {
             method: 'GET',
             headers: {
                 'Accept': 'image/png',
@@ -19,7 +25,7 @@ export async function loader() {
 
         console.log(imageUrl)
 
-        return { imageUrl }; // Return the image URL for use in the component
+        return imageUrl; 
 
     } catch (error) {
         console.error("Error fetching chart:", error);
@@ -28,7 +34,7 @@ export async function loader() {
 }
 
 export default function ForecastChart() {
-    const { imageUrlTemp } = useLoaderData();
+    const imageUrlTemp = useLoaderData();
 
     return (
         <div className="h-dvh bg-gradient-to-br from-purple-500 via-blue-400 to-blue-600 text-gray-100 flex flex-col p-6">

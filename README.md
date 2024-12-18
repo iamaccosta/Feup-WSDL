@@ -21,6 +21,9 @@ Web Semântica e Dados Ligados
 2. Run `npm install` to install the dependencies
 3. Run `npm run dev` to start the app.
 
+## Fuseki
+Apache Jena Fuseki server is used to create our Knowledgebase solution for applications/systems related to SmartCity. In scripts folder there is a detailed [explanation](./scripts/README.md) of each script, what data is being collected and the information that it provides.
+
 # Docker Development
 
 Alternatively, you can use `docker compose up --build --force-recreate --watch`, in the `website/` to start the apps.
