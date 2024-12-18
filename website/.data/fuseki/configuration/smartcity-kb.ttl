@@ -12,13 +12,24 @@ PREFIX tdb2:   <http://jena.apache.org/2016/tdb#>
 :service_tdb_all  rdf:type  fuseki:Service;
         rdfs:label       "TDB2 smartcity-kb";
         fuseki:dataset   :tdb_dataset_readwrite;
+<<<<<<<< HEAD:website/.data/fuseki/configuration/smartcity-kb.ttl
         fuseki:endpoint  [ fuseki:operation  fuseki:update ];
+========
+        fuseki:endpoint  [ fuseki:operation  fuseki:gsp-rw ];
+>>>>>>>> main:website/config/smartcity-kb.ttl
         fuseki:endpoint  [ fuseki:name       "sparql";
                            fuseki:operation  fuseki:query
+                         ];
+        fuseki:endpoint  [ fuseki:name       "data";
+                           fuseki:operation  fuseki:gsp-rw
+                         ];
+        fuseki:endpoint  [ fuseki:name       "get";
+                           fuseki:operation  fuseki:gsp-r
                          ];
         fuseki:endpoint  [ fuseki:name       "update";
                            fuseki:operation  fuseki:update
                          ];
+<<<<<<<< HEAD:website/.data/fuseki/configuration/smartcity-kb.ttl
         fuseki:endpoint  [ fuseki:name       "query";
                            fuseki:operation  fuseki:query
                          ];
@@ -30,4 +41,11 @@ PREFIX tdb2:   <http://jena.apache.org/2016/tdb#>
         fuseki:endpoint  [ fuseki:name       "get";
                            fuseki:operation  fuseki:gsp-r
                          ];
+========
+        fuseki:endpoint  [ fuseki:operation  fuseki:query ];
+        fuseki:endpoint  [ fuseki:operation  fuseki:update ];
+        fuseki:endpoint  [ fuseki:name       "query";
+                           fuseki:operation  fuseki:query
+                         ];
+>>>>>>>> main:website/config/smartcity-kb.ttl
         fuseki:name      "smartcity-kb" .

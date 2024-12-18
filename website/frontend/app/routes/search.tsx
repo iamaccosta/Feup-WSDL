@@ -55,7 +55,7 @@ export default function Search() {
                 </Link>
 
                 <Link
-                to="/bus-station"
+                to="/map"
                 className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 px-6 rounded-lg shadow-lg transition-all"
                 >
                 Bus Station

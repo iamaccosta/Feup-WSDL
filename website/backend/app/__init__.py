@@ -202,3 +202,51 @@ def get_precipitation():
             return f"Error: {response.status_code}, {response.text}"
     except Exception as e:
         return f"Error performing query: {e}"
+
+@app.route('/get-busstations')
+def get_busstations():
+
+    query = """
+    PREFIX geo1: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    PREFIX sckb: <http://example.org/smartcity#>
+    PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+    SELECT ?busStop ?label ?busStopName ?location ?latitude ?longitude ?nextBus
+    WHERE {
+    ?busStop a sckb:BusStop ;
+            rdfs:label ?label ;
+            sckb:busStopName ?busStopName ;
+            sckb:isLocatedIn sckb:Barcelona ;
+            geo1:lat ?latitude ;
+            geo1:long ?longitude .
+    
+    OPTIONAL {
+        ?busStop sckb:hasNextBus ?nextBus .
+    }
+    } GROUP BY ?busStopName
+    """
+
+    try:
+        params = {"query": query}
+        headers = {"Accept": "application/sparql-results+json"}
+
+        response = requests.get(SPARQL_ENDPOINT, params=params, headers=headers)
+        
+        if response.status_code == 200:
+            data = response.json()['results']['bindings']
+            
+            busStpoName = data['results']['bindings'][0]['BusStopName']['value']
+            latitude = data['results']['bindings'][0]['latitude']['value']
+            longitude = data['results']['bindings'][0]['longitude']['value']
+
+            return ({
+                'busStopName': busStpoName,
+                'latitude': latitude,
+                'longitude': longitude
+            })
+
+        else:
+            return f"Error: {response.status_code}, {response.text}"
+    except Exception as e:
+        return f"Error performing query: {e}"
