@@ -29,8 +29,9 @@ def get_staticinfo():
     """
     try:
         params = {"query": query}
+        headers = {"Accept": "application/json"}
         
-        response = requests.get(SPARQL_ENDPOINT, params=params)
+        response = requests.get(SPARQL_ENDPOINT, params=params, headers=headers)
 
         if response.status_code == 200:
             data = response.json()
@@ -65,8 +66,10 @@ def get_currentWeather():
     """
     try:
         params = {"query": query}
-        response = requests.get(SPARQL_ENDPOINT, params=params)
+        headers = {"Accept": "application/json"}
 
+        response = requests.get(SPARQL_ENDPOINT, params=params, headers=headers)
+        
         if response.status_code == 200:
             data = response.json()
 
@@ -114,8 +117,10 @@ def get_forecast():
 
     try:
         params = {"query": query}
-        response = requests.get(SPARQL_ENDPOINT, params=params)
-        
+        headers = {"Accept": "application/json"}
+
+        response = requests.get(SPARQL_ENDPOINT, params=params, headers=headers)
+
         if response.status_code == 200:
             data = response.json()['results']['bindings']
 
