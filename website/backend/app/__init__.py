@@ -106,56 +106,7 @@ def get_static_info(city, data):
         'description': description,
         'currentTemperature' : current_temperature,
         'currentWeatherCondition': current_weather_condition           
-    })
-    
-    # if result is None:
-    #     return abort(404)
-    
-    # description = result['description']['value']
-    # current_temperature = result['currentTemperature']['value']
-    # current_weather_condition = result['currentWeatherCondition']['value']
-    
-    # return jsonify({
-    #     'label': city,
-    #     'description': description,
-    #     'currentTemperature' : current_temperature,
-    #     'currentWeatherCondition': current_weather_condition
-    # }), 200
-
-@app.route('/get-currentWeather')
-def get_currentWeather(data):
-    city = request.args.get('q')
-    query = f"""
-    PREFIX sckb: <http://example.org/smartcity#>
-    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-
-    SELECT ?currentTemp ?cond 
-    WHERE {{
-        sckb:{city} sckb:currentTemperature ?currentTemp .
-  		sckb:{city} sckb:currentWeatherCondition ?cond .
-    }}
-    """
-    try:
-        params = {"query": query}
-        headers = {"Accept": "application/sparql-results+json"}
-
-        response = requests.get(SPARQL_ENDPOINT, params=params, headers=headers)
-        
-        if response.status_code == 200:
-            data = response.json()
-
-            currentTemp = data['results']['bindings'][0]['currentTemp']['value']
-            currentCondition = data['results']['bindings'][0]['cond']['value']
-           
-            return ({
-                'currentTemp': currentTemp,
-                'currentCondition': currentCondition,
-            })
-                
-        else:
-            return f"Error: {response.status_code}, {response.text}"
-    except Exception as e:
-        return f"Error performing query: {e}"   
+    })  
 
 
 @app.route('/<city>/forecast')
@@ -185,16 +136,16 @@ def get_currentWeather(data):
     ORDER BY ?date
     """
 )
-def get_forec(data):
+def get_forec(city, data):
     
     days_in_report = []
     for entry in data['results']['bindings']:
         date = entry['date']['value'].split("/")[-1].replace("T", "")
         days_in_report.append({
             'date': date,
-            'meanT': entry['temperature']['value'],
-            'meanWind': entry['windSpeed']['value'],
-            'condition': entry['condition']['value']
+            'meanT': entry['avgTemperature']['value'],
+            'meanWind': entry['avgWindSpeed']['value'],
+            'condition': entry['conditions']['value']
         })
         
     return days_in_report

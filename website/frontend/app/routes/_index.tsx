@@ -18,7 +18,7 @@ export default function Index() {
     <div
       className="flex h-dvh flex-col items-center justify-center bg-gradient-to-br from-purple-500 via-blue-400 to-blue-600"
     >
-      {/* Title and Description */}
+     
       <div className="text-center mb-12">
         <h1 className="text-4xl font-extrabold text-gray-100">
           Welcome to SmartCity KB
@@ -28,7 +28,6 @@ export default function Index() {
         </p>
       </div>
 
-      {/* Search Form */}
       <Form
         method="get"
         action="/search"
