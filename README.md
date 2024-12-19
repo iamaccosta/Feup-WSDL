@@ -34,3 +34,9 @@ Apache Jena Fuseki server is used to create our Knowledgebase solution for appli
 
 Alternatively, you can use `docker compose up --build --force-recreate --watch`, in the `website/` to start the apps.
 In this case, the files will be mounted in the containers using volumes, so all changes will be reflected in the running containers (including changes in the PyPI or NPM dependencies).
+
+# Demo
+
+A small demonstration of our Web UI can be visualized in this [video](https://drive.google.com/file/d/1D0RBI8Ure1blOIwhMeP96-JDE3-sLczh/view?usp=sharing). It showcases all the information until now collected and a clear usage of that info as a benefit for population of an urban area.
+
+This [PowerPoint](./docs/SmarCity-FinalPresentation.pptx) was used for the final presentation and has also relevant information, specifically visual content.
