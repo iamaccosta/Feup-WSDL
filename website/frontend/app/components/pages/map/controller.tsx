@@ -66,7 +66,7 @@ export function MapController() {
 function BusStopPopupContent({ busStop }: { busStop: BusStop }) {
     const mounted = useMounted();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const [busInfo, setBusInfo] = useState<any>(null);
+    const [busInfo, setBusInfo] = useState<any>(undefined);
 
     const city = busStop.city;
     const busStopId = busStop.busStopId;
@@ -85,13 +85,15 @@ function BusStopPopupContent({ busStop }: { busStop: BusStop }) {
     }, [city, busStopId, mounted]);
 
   return (
-    busInfo === null
+    busInfo === undefined
         ? <p>Loading...</p>
-        : <div className="w-24 text-xs space-y-1">
-            <p className="font-bold text-sm mb-2">Next Bus</p>
-            <p><span className="font-semibold">Destination:</span> {busInfo.destination}</p>
-            <p><span className="font-semibold">Line:</span> {busInfo.line}</p>
-            <p><span className="font-semibold">ETA (min):</span> {busInfo.timeInMinutes}</p>
-        </div>
+        : busInfo === null
+            ? <p>No buses found.</p>
+            : <div className="w-24 text-xs space-y-1">
+                <p className="font-bold text-sm mb-2">Next Bus</p>
+                <p><span className="font-semibold">Destination:</span> {busInfo.destination}</p>
+                <p><span className="font-semibold">Line:</span> {busInfo.line}</p>
+                <p><span className="font-semibold">ETA (min):</span> {busInfo.timeInMinutes}</p>
+            </div>
   );
 }

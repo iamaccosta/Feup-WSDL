@@ -46,7 +46,7 @@ export default function Index() {
                     id="city"
                     name="city"
                     type="text"
-                    placeholder="Barcelona"
+                    placeholder="A city..."
                     className="text-2xl border-none shadow-none focus-visible:ring-0 p-0 ml-0"
                     required
                   />

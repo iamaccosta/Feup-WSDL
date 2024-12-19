@@ -18,7 +18,9 @@ JENA_SUPPORTED_CONTENT_TYPES = [
     "text/turtle",
     "text/plain",
     "application/rdf+xml",
-    "application/xml"
+    "application/xml",
+    "text/csv",
+    "text/tsv"
 ]
 
 render_pool = multiprocessing.Pool(processes=2)
