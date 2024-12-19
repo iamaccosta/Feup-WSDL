@@ -4,7 +4,7 @@ Web Semântica e Dados Ligados.
 ---
 
 ### Setup
-The Setup explanation is detailed in [setup](./docs/) document.
+The Setup explanation is detailed in [setup](./docs/setup.md) document.
 
 ---
 
