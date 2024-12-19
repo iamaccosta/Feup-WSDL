@@ -50,7 +50,7 @@ The **City** Entity is liked to DBpedia resource through the prefix of DBpedia.
 RDF Data is available in Turtle, JSON-LD, and XML formats.
 
 ## Data Collection and Conversion
-This phase is explained on the [readme](../scripts/README.md) inside the folder scripts.
+This phase is explained on the [readme](../scripts/README.md) inside the folder scripts and demonstrated in this [video](https://drive.google.com/file/d/1SWiUwRvQKMElsfuDbMHpswUetmsDDkrG/view?usp=drive_link).
 
 ## Content Negotiation
 The server processes requests for different data formats using the Accept headers provided by the client. Based on these headers, the server forwards the request to the Jena Fuseki server, which is capable of returning responses in multiple standard formats (e.g., JSON, XML, Turtle, CSV) as per the content negotiation mechanism. Representative [Video](https://drive.google.com/file/d/1rLDO9P6DPeySVdQDmEwpxMXyLHeiD0KI/view?usp=drive_link) that showcases this feature directly on our Web App.
