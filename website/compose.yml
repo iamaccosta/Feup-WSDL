@@ -8,12 +8,12 @@ services:
     develop:
       watch:
         - path: ./backend/
-          target: /usr/src/
+          target: /home/runner/backend
           action: sync
           ignore:
             - requirements.txt
         - path: ./backend/requirements.txt
-          target: /usr/src/requirements.txt
+          target: /home/runner/backend/requirements.txt
           action: rebuild
     volumes:
       - ./.data/backend:/data
@@ -44,11 +44,11 @@ services:
   fuseki:
     image: stain/jena-fuseki:latest
     container_name: jena-fuseki
+    
     ports:
       - "3030:3030"
     volumes:
-      - ./databases:/fuseki/databases
-      - ./config:/fuseki/configuration
+      - ./.data/fuseki:/fuseki
     environment:
       - ADMIN_PASSWORD=smartcity-kb
     restart: always

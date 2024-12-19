@@ -7,6 +7,7 @@ import {
 } from "@remix-run/react";
 import type { LinksFunction } from "@remix-run/node";
 
+import 'leaflet/dist/leaflet.css';
 import "./tailwind.css";
 
 export const links: LinksFunction = () => [
@@ -38,6 +39,13 @@ export function Layout({ children }: { children: React.ReactNode }) {
       </body>
     </html>
   );
+}
+
+export function HydrateFallback() {
+  return <>
+    <p>Loading...</p>
+    <Scripts />
+  </>
 }
 
 export default function App() {

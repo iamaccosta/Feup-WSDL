@@ -1,0 +1,7 @@
+/backups/
+/logs/
+/system/
+/system_files/
+/templates/
+/config.ttl
+/shiro.ini
