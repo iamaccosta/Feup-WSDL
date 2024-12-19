@@ -1,22 +1,31 @@
 import { LoaderFunctionArgs } from "@remix-run/node";
 import { useLoaderData, Link } from "@remix-run/react";
+import { normalizeCityName } from "~/lib/city";
+import { getStaticInfo } from "~/lib/requests";
 
-export async function loader({ request }: LoaderFunctionArgs) {
-    
+export async function clientLoader({ request }: LoaderFunctionArgs) {
     const url = new URL(request.url);
-    
     const query = url.searchParams.get("q");
     
     if (!query) {
         throw new Response("A search query must be provided", { status: 400 });
     }
 
+    const normalizedQuery = normalizeCityName(query);
+
+    const info = await getStaticInfo(normalizedQuery);
+    if (info === null) {
+        return Response.redirect('/', 301);
+    }
+
+    // return Response.redirect(`/cities/${normalizedQuery}`, 301);
+
     try {
-        const response = await fetch(`http://backend:5000/get-staticinfo?q=${query}`, {
+        const response = await fetch(`http://localhost:5000/${normalizedQuery}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
-                'Accept': 'application/ld+json',
+                'Accept': 'application/json',
             },
         })
 
@@ -36,19 +45,19 @@ export async function loader({ request }: LoaderFunctionArgs) {
 }
 
 export default function Search() {
-    const results = useLoaderData<typeof loader>();
+    const results = useLoaderData<typeof clientLoader>();
 
     return (
         <div className="h-dvh bg-gradient-to-br from-purple-500 via-blue-400 to-blue-600 text-gray-100 flex flex-col">
     
             <header className="p-6 text-center">
-                <h1 className="text-4xl font-extrabold">{results.city}</h1>
+                <h1 className="text-4xl font-extrabold">{results.label}</h1>
             </header>
 
             <div className="flex justify-center gap-6 mb-6">
                 
                 <Link
-                to={`/forecast?city=${results.city}`}
+                to={`/forecast?city=${results.label}`}
                 className="bg-purple-600 hover:bg-purple-700 text-white font-semibold py-3 px-6 rounded-lg shadow-lg transition-all"
                 >
                 Forecast
