@@ -39,7 +39,7 @@ All entities have well-defined HTTP URIs for identification.
 Every triple has a label to provide readable information for users and queries.
 
 **Prefixes used:**
-- `@prefix sckb: <http://example.org/smartcity#>`
+- `@prefix sckb: <http://example.org/smartcity#>` -> Our Custom *total representative* Prefix
 - `@prefix dbpedia: <http://dbpedia.org/resource/>`
 - `@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>`
 - `@prefix geo1: <http://www.w3.org/2003/01/geo/wgs84_pos#>`
@@ -53,15 +53,20 @@ RDF Data is available in Turtle, JSON-LD, and XML formats.
 This phase is explained on the [readme](../scripts/README.md) inside the folder scripts.
 
 ## Content Negotiation
-The server processes requests for different data formats using the Accept headers provided by the client. Based on these headers, the server forwards the request to the Jena Fuseki server, which is capable of returning responses in multiple standard formats (e.g., JSON, XML, Turtle, CSV) as per the content negotiation mechanism.
+The server processes requests for different data formats using the Accept headers provided by the client. Based on these headers, the server forwards the request to the Jena Fuseki server, which is capable of returning responses in multiple standard formats (e.g., JSON, XML, Turtle, CSV) as per the content negotiation mechanism. Representative [Video](https://drive.google.com/file/d/1rLDO9P6DPeySVdQDmEwpxMXyLHeiD0KI/view?usp=drive_link) that showcases this feature directly on our Web App.
 
-### Resquest with application/json
+### Apache Jena Fuseki Content Negotiation
+#### Resquest with application/json
 ![Application/json](../imgs/application_json.png)
-### Request with text/turtle
+#
+#### Request with text/turtle
 ![Text/Turtle](../imgs/text_turtle.png)
-### Request with application/sparql-results+xml
+#
+#### Request with application/sparql-results+xml
 ![Application/Sparql-Results+XML](../imgs/sparql_results_xml.png)
-### Request with text/tab-separated-values
+#
+#### Request with text/tab-separated-values
 ![Text/Tab-Separated-Values](../imgs/text_separated_values.png)
+#
 ### Request with text/csv
 ![Text/CSV](../imgs/text_csv.png)
