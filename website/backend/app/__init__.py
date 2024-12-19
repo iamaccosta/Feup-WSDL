@@ -82,12 +82,15 @@ def content_negotiation(handled_content_type: str, query: str):
     """
     PREFIX sckb: <http://example.org/smartcity#>
     PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    PREFIX geo1: <http://www.w3.org/2003/01/geo/wgs84_pos#>
 
-    SELECT ?description ?currentTemperature ?currentWeatherCondition
+    SELECT ?description ?currentTemperature ?currentWeatherCondition ?latitude ?longitude
     WHERE {{
         sckb:{city} sckb:description ?description .
         sckb:{city} sckb:currentTemperature ?currentTemperature .
         sckb:{city} sckb:currentWeatherCondition ?currentWeatherCondition .
+        sckb:{city} geo1:lat ?latitude .
+        sckb:{city} geo1:long ?longitude .
     }}
     """
 )
@@ -100,12 +103,16 @@ def get_static_info(city, data):
     description = result['description']['value']
     current_temperature = result['currentTemperature']['value']
     current_weather_condition = result['currentWeatherCondition']['value']
+    latitude = result['latitude']['value']
+    longitude = result['longitude']['value']
     
     return jsonify({
         'label': city,
         'description': description,
         'currentTemperature' : current_temperature,
-        'currentWeatherCondition': current_weather_condition           
+        'currentWeatherCondition': current_weather_condition,   
+        'latitude': latitude,
+        'longitude': longitude
     })  
 
 
@@ -237,17 +244,14 @@ def get_precipitation(city, data):
     PREFIX sckb: <http://example.org/smartcity#>
     PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 
-    SELECT DISTINCT ?label ?latitude ?longitude
+    SELECT DISTINCT ?busStopId ?label ?latitude ?longitude
     WHERE {{
     ?busStop a sckb:BusStop ;
-            rdfs:label ?label ;
-            sckb:isLocatedIn sckb:{city} ;
-            geo1:lat ?latitude ;
-            geo1:long ?longitude .
-            
-    OPTIONAL {{
-        ?busStop sckb:hasNextBus ?nextBus .
-    }}
+        sckb:busStopId ?busStopId ;
+        rdfs:label ?label ;
+        sckb:isLocatedIn sckb:{city} ;
+        geo1:lat ?latitude ;
+        geo1:long ?longitude .
     }}
     """
 )
@@ -257,16 +261,65 @@ def get_busstations(city, data):
         busStopName = result['label']['value']
         latitude = result['latitude']['value']
         longitude = result['longitude']['value']
+        busStopId = result['busStopId']['value']
         
         return {
             'busStopName': busStopName,
             'latitude': latitude,
-            'longitude': longitude
+            'longitude': longitude,
+            'busStopId': busStopId,
+            'city': city
         }
         
     results = list(map(func, data['results']['bindings']))
     
 
     return results
+
+@app.get("/<city>/BusStop/stop_<busStopId>")
+@content_negotiation(
+    "application/json",
+    """
+    PREFIX geo1: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    PREFIX sckb: <http://example.org/smartcity#>
+    PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+    SELECT ?nextBusLabel ?destination ?line ?timeInMinutes
+    WHERE {{
+        ?busStop a sckb:BusStop ;
+            sckb:busStopId "{busStopId}"^^xsd:string ;
+            sckb:hasNextBus ?nextBus ;
+            sckb:isLocatedIn sckb:{city} .
+
+        ?nextBus a sckb:BusInfo ;
+            rdfs:label ?nextBusLabel ;
+            sckb:destination ?destination ;
+            sckb:line ?line ;
+            sckb:timeInMinutes ?timeInMinutes .
+    }}
+    """
+)
+def get_businfo(city, busStopId, data):
+    result = data['results']['bindings']
+    if len(result) == 0:
+        return abort(404)
+
+    result = result[0]
+
+    next_bus_label = result['nextBusLabel']['value']
+    destination = result['destination']['value']
+    line = result['line']['value']
+    time_in_minutes = result['timeInMinutes']['value']
+
+    return jsonify({
+        'nextBusLabel': next_bus_label,
+        'destination': destination,
+        'line': line,
+        'timeInMinutes': time_in_minutes
+    })
+
+    return result
+
 
        
